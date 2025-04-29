@@ -4,5 +4,8 @@
 </template>
 
 <script setup>
-console.log('👋 This message is being logged by "App.vue", included via Vite');
+import "@/assets/main.css";
+import "@/common/Prototype.js";
+
+console.log("App is running success: " + new Date());
 </script>
