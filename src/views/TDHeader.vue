@@ -10,11 +10,8 @@
 </template>
 
 <script>
-import TDInput from "@/components/TDInput.vue";
-
 export default {
   name: "TDHeader",
-  components: { TDInput },
 
   created() {},
   mounted() {},
