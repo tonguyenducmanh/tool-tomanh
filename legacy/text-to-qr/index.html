@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Text to QR Code Generator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="history-section">
+        <div class="history-header">
+          <h3>Lịch sử</h3>
+          <button id="clear-all-history" class="clear-all-btn">
+            Xóa tất cả
+          </button>
+        </div>
+        <div id="history-list"></div>
+      </div>
+      <div class="input-section">
+        <textarea
+          id="text-input"
+          class="input-area"
+          placeholder="Nhập văn bản để tạo mã QR code..."
+        ></textarea>
+        <div class="checkbox-wrapper noselect">
+          <input type="checkbox" id="remove-empty-checkbox" />
+          <label for="remove-empty-checkbox">Xóa ký tự xuống dòng</label>
+          <input type="radio" name="type-qr" id="qrcode-lib" checked />
+          <label for="qrcode-lib">qrcode.js</label>
+          <input type="radio" name="type-qr" id="qrcodegen-lib" />
+          <label for="qrcodegen-lib">qrcodegen.js</label>
+        </div>
+        <button id="generate-btn">Tạo QR Code</button>
+      </div>
+      <div id="qrcode" class="qrcode-box"></div>
+    </div>
+    <script src="qrcode.js"></script>
+    <script src="qrcodegen.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

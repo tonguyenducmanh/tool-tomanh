@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSON to PostgreSQL INSERT Script</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>JSON to PostgreSQL INSERT Script</h1>
+
+      <div class="metadata-inputs">
+        <div>
+          <label for="tableName">Tên bảng:</label>
+          <input type="text" id="tableName" value="your_table" />
+        </div>
+        <div>
+          <label for="schemaName">Tên schema:</label>
+          <input type="text" id="schemaName" value="public" />
+        </div>
+        <div>
+          <label for="primaryKeyField">Cột khóa chính:</label>
+          <input type="text" id="primaryKeyField" value="id" />
+        </div>
+      </div>
+
+      <div class="io-section">
+        <div class="io-textbox">
+          <label for="jsonInput">Nhập JSON:</label>
+          <textarea id="jsonInput" placeholder="Nhập JSON ở đây..."></textarea>
+        </div>
+        <div class="io-textbox">
+          <label for="sqlOutput">Kết quả SQL:</label>
+          <textarea
+            id="sqlOutput"
+            readonly
+            placeholder="SQL sẽ xuất hiện ở đây..."
+          ></textarea>
+        </div>
+      </div>
+
+      <button id="convertButton">Chuyển đổi</button>
+    </div>
+    <script type="module" src="./src/web.js"></script>
+  </body>
+</html>
