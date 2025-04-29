@@ -2,8 +2,7 @@
   margin: 0;
   padding: 0;
 }
-:root,
-:root[data-theme="light"] {
+body[data-theme="light"] {
   --bg-main-color: rgb(246, 246, 246);
   --text-primary-color: rgb(0, 0, 0);
   --text-secondary-color: rgb(33, 33, 33);
@@ -11,8 +10,7 @@
   --border-color: #44fcc8;
 }
 
-:root,
-:root[data-theme="dark"] {
+body[data-theme="dark"] {
   --bg-main-color: rgb(10, 10, 10);
   --text-primary-color: rgb(255, 255, 255);
   --text-secondary-color: rgb(163, 163, 163);
@@ -20,7 +18,7 @@
   --border-color: #ffffff1a;
 }
 
-:root {
+body {
   --main-font: ui-monospace, "Fira Code", Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
 }
