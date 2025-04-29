@@ -1,9 +1,13 @@
 <template>
   <div class="td-sidebar">
     <template v-for="(item, index) in routerLink">
-      <RouterLink class="td-sidebar-item" :id="index" :to="item.path">{{
-        item.title
-      }}</RouterLink>
+      <RouterLink
+        class="td-sidebar-item"
+        activeClass="td-item-active"
+        :id="index"
+        :to="item.path"
+        >{{ item.title }}</RouterLink
+      >
     </template>
   </div>
 </template>
@@ -53,22 +57,25 @@ export default {
   width: 300px;
   height: 100%;
   background-color: var(--bg-sub-color);
-
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
 
   .td-sidebar-item {
-    width: 100%;
-    height: 30px;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 30px;
     padding: var(--padding);
     padding-left: var(--padding-large);
   }
   .td-sidebar-item:hover {
     background-color: var(--bg-main-color);
+  }
+  .td-item-active {
+    background-color: var(--bg-active-color);
   }
 }
 </style>
