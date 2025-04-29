@@ -1,10 +1,13 @@
 <template>
+  <TDHeader></TDHeader>
   <RouterView />
 </template>
 
 <script>
+import TDHeader from "@/views/TDHeader.vue";
 import "@/common/TDPrototype.js";
 export default {
+  components: { TDHeader },
   created() {
     let me = this;
     console.log("App is running success: " + new Date());

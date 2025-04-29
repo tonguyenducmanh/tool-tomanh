@@ -2,12 +2,19 @@
   margin: 0;
   padding: 0;
 }
+
+:root {
+  --padding: 8px;
+  --border-radius: 8px;
+}
+
 body[data-theme="light"] {
   --bg-main-color: rgb(246, 246, 246);
   --text-primary-color: rgb(0, 0, 0);
   --text-secondary-color: rgb(33, 33, 33);
   --text-tertiary-color: rgb(44, 34, 34);
-  --border-color: #44fcc8;
+  --border-color: #634244;
+  --focus-color: #cf8a8a;
 }
 
 body[data-theme="dark"] {
@@ -16,6 +23,7 @@ body[data-theme="dark"] {
   --text-secondary-color: rgb(163, 163, 163);
   --text-tertiary-color: rgb(115, 115, 115);
   --border-color: #ffffff1a;
+  --focus-color: #780000;
 }
 
 body {

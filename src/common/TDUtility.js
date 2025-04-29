@@ -10,29 +10,39 @@ class TDUtility {
    * Created by tdmanh1 19.09.2024
    */
   forEach(obj, fn) {
-    if (obj === null || typeof obj === 'undefined') {
-      return
+    if (obj === null || typeof obj === "undefined") {
+      return;
     }
 
     // Force an array if not already something
-    if (typeof obj !== 'object') {
-      obj = [obj]
+    if (typeof obj !== "object") {
+      obj = [obj];
     }
 
     if (obj instanceof Array) {
       // Duyệt từng phần tử của mảng
       for (var i = 0, l = obj.length; i < l; i++) {
-        fn.call(null, obj[i], i, obj)
+        fn.call(null, obj[i], i, obj);
       }
     } else {
       // nếu là Object thì duyệt từng thuộc tính
       for (var key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
-          fn.call(null, obj[key], key, obj)
+          fn.call(null, obj[key], key, obj);
         }
       }
     }
   }
+
+  debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func.apply(this, args);
+      }, delay);
+    };
+  }
 }
 
-export default new TDUtility()
+export default new TDUtility();
