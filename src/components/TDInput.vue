@@ -1,6 +1,10 @@
 <template>
   <div class="td-input">
-    <input :placeholder="placeHolder" v-model="value" />
+    <input
+      :placeholder="placeHolder"
+      :value="modelValue"
+      :disabled="readOnly"
+    />
     <slot></slot>
   </div>
 </template>
@@ -18,22 +22,25 @@ export default {
       type: String,
       default: "Nhập giá trị",
     },
+    modelValue: {
+      type: String,
+      default: null,
+    },
+    readOnly: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       value: null,
     };
   },
-  watch: {
-    value(newVal, oldVal) {
-      let me = this;
-      me.inputValue(newVal);
-    },
-  },
+  watch: {},
   methods: {
-    inputValue: _.debounce(function (val) {
+    changeInputValue: _.debounce(function (e) {
       let me = this;
-      me.$emit("changeInput", val);
+      me.$emit("update:modelValue", e.target.value);
     }, 500),
   },
 };

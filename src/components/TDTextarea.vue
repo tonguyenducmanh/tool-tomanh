@@ -1,6 +1,11 @@
 <template>
   <div class="td-textarea">
-    <textarea :placeholder="placeHolder" v-model="value" :disabled="readOnly" />
+    <textarea
+      :placeholder="placeHolder"
+      :value="modelValue"
+      :disabled="readOnly"
+      @input="changeInputValue"
+    />
   </div>
 </template>
 
@@ -17,6 +22,10 @@ export default {
       type: String,
       default: "Nhập giá trị",
     },
+    modelValue: {
+      type: String,
+      default: null,
+    },
     readOnly: {
       type: Boolean,
       default: false,
@@ -28,15 +37,11 @@ export default {
     };
   },
   watch: {
-    value(newVal, oldVal) {
-      let me = this;
-      me.textareaValue(newVal);
-    },
   },
   methods: {
-    textareaValue: _.debounce(function (val) {
+    changeInputValue: _.debounce(function (e) {
       let me = this;
-      me.$emit("changetextarea", val);
+      me.$emit("update:modelValue", e.target.value);
     }, 500),
   },
 };
