@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>💖 Image To base 64 tool!</h1>
+    <h1>💖 Base 64 to Image tool!</h1>
   </div>
 </template>
 

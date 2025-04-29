@@ -20,6 +20,14 @@ const router = createRouter({
     },
     {
       /**
+       * chuyển đổi ảnh thành base 64
+       */
+      path: "/base64toimage",
+      name: "base64toimage",
+      component: () => import("@/views/tools/TDBase64ToImage.vue"),
+    },
+    {
+      /**
        * chuyển đổi json thành câu lệnh insert postgresql
        */
       path: "/jsontopostgresql",
