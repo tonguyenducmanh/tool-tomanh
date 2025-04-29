@@ -1,8 +1,8 @@
 {
-  "name": "my-vue-app",
-  "productName": "my-vue-app",
+  "name": "utility-for-dev",
+  "productName": "utility-for-dev",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "utility for dev app",
   "main": ".vite/build/main.js",
   "scripts": {
     "web:dev": "vite",
