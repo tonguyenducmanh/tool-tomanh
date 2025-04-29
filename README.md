@@ -25,3 +25,11 @@ npm run electron:start
 ```
 npm run electron:package
 ```
+
+config của toàn bộ ứng dụng có thể truy cập thông qua việc enter lệnh sau ở cửa sổ console
+
+```
+window.__env
+```
+
+các object global được inject trong file renderer.js, vd $tdCache = import TDCache.js, $tdEnum = import TDEnum.js

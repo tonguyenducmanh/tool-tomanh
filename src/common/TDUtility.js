@@ -1,8 +1,8 @@
 /**
- * các method utility dùng cho toàn bộ frontend
+ * các method TDutility dùng cho toàn bộ frontend
  * Created by tdmanh1 19.09.2024
  */
-class Utility {
+class TDUtility {
   /**
    * Thực hiện duyệt từng phần tử của bảng hoặc thuộc tính của object để call fn
    * @param {Array/Object/...} obj
@@ -35,4 +35,4 @@ class Utility {
   }
 }
 
-export default new Utility()
+export default new TDUtility()

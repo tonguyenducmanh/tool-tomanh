@@ -1,361 +1,43 @@
-// Main styling for the application
-
-// Color variables
-:root {
-  // Main colors
-  --color-background: #1e1e1e;
-  --color-background-light: #2a2a2a;
-  --color-background-lighter: #363636;
-  --color-primary: #3366cc;
-  --color-primary-dark: #254e99;
-  --color-accent: #ff7f00;
-  --color-accent-dark: #cc6600;
-  
-  // Text colors
-  --color-text: rgba(255, 255, 255, 0.87);
-  --color-text-muted: rgba(255, 255, 255, 0.6);
-  --color-text-disabled: rgba(255, 255, 255, 0.38);
-  
-  // UI colors
-  --color-border: #444444;
-  --color-panel-header: #2d2d2d;
-  --color-grid: rgba(100, 100, 100, 0.2);
-  --color-selection: rgba(61, 133, 224, 0.5);
-  
-  // Status colors
-  --color-success: #43a047;
-  --color-warning: #fb8c00;
-  --color-error: #e53935;
-  
-  // Spacing
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  
-  // Other
-  --border-radius: 4px;
-  --transition-speed: 0.2s;
-  --panel-header-height: 28px;
-  --main-header-height: 32px;
-  --main-toolbar-height: 40px;
-  --statusbar-height: 24px;
-}
-
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+:root,
+:root[data-theme="light"] {
+  --bg-main-color: rgb(246, 246, 246);
+  --text-primary-color: rgb(0, 0, 0);
+  --text-secondary-color: rgb(33, 33, 33);
+  --text-tertiary-color: rgb(44, 34, 34);
+  --border-color: #44fcc8;
 }
 
+:root,
+:root[data-theme="dark"] {
+  --bg-main-color: rgb(10, 10, 10);
+  --text-primary-color: rgb(255, 255, 255);
+  --text-secondary-color: rgb(163, 163, 163);
+  --text-tertiary-color: rgb(115, 115, 115);
+  --border-color: #ffffff1a;
+}
+
+:root {
+  --main-font: ui-monospace, "Fira Code", Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+html,
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--color-text);
-  background-color: var(--color-background);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#app {
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-// Basic UI elements
-button {
-  background-color: var(--color-background-lighter);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  color: var(--color-text);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  cursor: pointer;
-  font-size: 13px;
-  transition: background-color var(--transition-speed);
-  
-  &:hover {
-    background-color: var(--color-background-light);
-  }
-  
-  &:active {
-    background-color: var(--color-primary-dark);
-  }
-  
-  &.primary {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary-dark);
-    
-    &:hover {
-      background-color: var(--color-primary-dark);
-    }
-  }
-  
-  &.accent {
-    background-color: var(--color-accent);
-    border-color: var(--color-accent-dark);
-    
-    &:hover {
-      background-color: var(--color-accent-dark);
-    }
-  }
-}
-
-input, select, textarea {
-  background-color: var(--color-background-lighter);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  color: var(--color-text);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  font-size: 13px;
-  
-  &:focus {
-    outline: none;
-    border-color: var(--color-primary);
-  }
-}
-
-// Scrollbars
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--color-background);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-background-lighter);
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-border);
-}
-
-// Panel styles
-.panel {
-  background-color: var(--color-background-light);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  
-  .panel-header {
-    height: var(--panel-header-height);
-    background-color: var(--color-panel-header);
-    display: flex;
-    align-items: center;
-    padding: 0 var(--spacing-sm);
-    border-bottom: 1px solid var(--color-border);
-    user-select: none;
-    
-    .panel-title {
-      flex: 1;
-      font-weight: 500;
-      font-size: 12px;
-      text-transform: uppercase;
-      color: var(--color-text-muted);
-    }
-    
-    .panel-actions {
-      display: flex;
-      gap: var(--spacing-xs);
-      
-      button {
-        padding: 2px;
-        border: none;
-        background: none;
-        color: var(--color-text-muted);
-        
-        &:hover {
-          color: var(--color-text);
-        }
-      }
-    }
-  }
-  
-  .panel-content {
-    flex: 1;
-    overflow: auto;
-    padding: var(--spacing-sm);
-  }
-}
-
-// Specific panel styles
-.viewport-panel {
-  flex: 1;
-  position: relative;
-  
-  .grid {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: 40px 40px;
-    background-image:
-      linear-gradient(to right, var(--color-grid) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--color-grid) 1px, transparent 1px);
-  }
-}
-
-// Splitpanes overrides
-.splitpanes {
-  background-color: var(--color-background) !important;
-  
-  .splitpanes__pane {
-    background-color: transparent !important;
-  }
-  
-  .splitpanes__splitter {
-    background-color: var(--color-background) !important;
-    position: relative;
-    
-    &:before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      background-color: var(--color-border);
-      opacity: 0.5;
-    }
-    
-    &:hover:before {
-      opacity: 0.8;
-    }
-    
-    &.splitpanes__splitter--active:before {
-      opacity: 1;
-      background-color: var(--color-primary);
-    }
-  }
-  
-  .splitpanes__splitter--horizontal {
-    height: 4px !important;
-    
-    &:before {
-      transform: scaleY(0.5);
-    }
-  }
-  
-  .splitpanes__splitter--vertical {
-    width: 4px !important;
-    
-    &:before {
-      transform: scaleX(0.5);
-    }
-  }
-}
-
-// Workspace layout
-.workspace {
+  font-family: var(--main-font);
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  
-  .workspace-header {
-    height: calc(var(--main-header-height) + var(--main-toolbar-height));
-    background-color: var(--color-background-light);
-    border-bottom: 1px solid var(--color-border);
-    display: flex;
-    flex-direction: column;
-    
-    .main-header {
-      height: var(--main-header-height);
-      display: flex;
-      align-items: center;
-      padding: 0 var(--spacing-sm);
-      border-bottom: 1px solid var(--color-border);
-      
-      .app-logo {
-        display: flex;
-        align-items: center;
-        font-weight: bold;
-        margin-right: var(--spacing-md);
-        color: var(--color-accent);
-      }
-      
-      .main-menu {
-        display: flex;
-        align-items: center;
-        gap: var(--spacing-md);
-        
-        .menu-item {
-          cursor: pointer;
-          
-          &:hover {
-            color: var(--color-primary);
-          }
-        }
-      }
-      
-      .window-controls {
-        margin-left: auto;
-        display: flex;
-        gap: var(--spacing-sm);
-      }
-    }
-    
-    .main-toolbar {
-      height: var(--main-toolbar-height);
-      display: flex;
-      align-items: center;
-      padding: 0 var(--spacing-sm);
-      
-      .tool-group {
-        display: flex;
-        gap: var(--spacing-xs);
-        margin-right: var(--spacing-md);
-        
-        .tool-button {
-          width: 32px;
-          height: 32px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: var(--border-radius);
-          
-          &:hover {
-            background-color: var(--color-background-lighter);
-          }
-          
-          &.active {
-            background-color: var(--color-primary);
-            color: white;
-          }
-        }
-      }
-    }
-  }
-  
-  .workspace-content {
-    flex: 1;
-    overflow: hidden;
-  }
-  
-  .workspace-footer {
-    height: var(--statusbar-height);
-    background-color: var(--color-background-light);
-    border-top: 1px solid var(--color-border);
-    display: flex;
-    align-items: center;
-    padding: 0 var(--spacing-sm);
-    font-size: 12px;
-    color: var(--color-text-muted);
-  }
+  width: 100%;
+  background-color: var(--bg-main-color);
+  color: var(--text-primary-color);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
 }
