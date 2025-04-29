@@ -6,12 +6,14 @@
 :root {
   --padding: 8px;
   --padding-medium: 4px;
+  --padding-large: 20px;
   --border-radius: 8px;
 }
 
 body[data-theme="light"] {
   --bg-main-color: rgb(246, 246, 246);
   --bg-sub-color: rgb(224, 223, 223);
+  --bg-active-color: rgb(212, 202, 202);
   --text-primary-color: rgb(0, 0, 0);
   --text-secondary-color: rgb(33, 33, 33);
   --text-tertiary-color: rgb(44, 34, 34);
@@ -22,6 +24,7 @@ body[data-theme="light"] {
 body[data-theme="dark"] {
   --bg-main-color: rgb(10, 10, 10);
   --bg-sub-color: rgb(40, 40, 40);
+  --bg-active-color: rgb(212, 202, 202);
   --text-primary-color: rgb(255, 255, 255);
   --text-secondary-color: rgb(163, 163, 163);
   --text-tertiary-color: rgb(115, 115, 115);
@@ -32,6 +35,10 @@ body[data-theme="dark"] {
 body {
   --main-font: ui-monospace, "Fira Code", Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
+}
+a {
+  color: inherit; /* blue colors for links too */
+  text-decoration: inherit; /* no underline */
 }
 
 html,

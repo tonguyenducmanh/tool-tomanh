@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>💖 Text To base 64 tool!</h1>
+    <h1>💖 Text To QR Code tool!</h1>
   </div>
 </template>
 

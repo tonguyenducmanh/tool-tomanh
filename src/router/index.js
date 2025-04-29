@@ -14,7 +14,7 @@ const router = createRouter({
       /**
        * chuyển đổi ảnh thành base 64
        */
-      path: "/",
+      path: "/imagetobase64",
       name: "imagetobase64",
       component: () => import("@/views/tools/TDImageToBase64.vue"),
     },
@@ -22,7 +22,7 @@ const router = createRouter({
       /**
        * chuyển đổi json thành câu lệnh insert postgresql
        */
-      path: "/",
+      path: "/jsontopostgresql",
       name: "jsontopostgresql",
       component: () => import("@/views/tools/TDJSONToPostgreSQL.vue"),
     },
@@ -30,7 +30,7 @@ const router = createRouter({
       /**
        * chuyển đổi văn bản thành mã QR
        */
-      path: "/",
+      path: "/textoqrcode",
       name: "textoqrcode",
       component: () => import("@/views/tools/TDTextToQRCode.vue"),
     },
