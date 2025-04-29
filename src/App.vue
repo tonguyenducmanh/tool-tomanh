@@ -1,6 +1,6 @@
 <template>
   <h1>💖 Hello World!</h1>
-  <p>Welcome to your Electron application.</p>
+  <p>Welcome to your Electron application appp 2.</p>
 </template>
 
 <script setup>
