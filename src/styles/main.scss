@@ -11,15 +11,17 @@
 
 body[data-theme="light"] {
   --bg-main-color: rgb(246, 246, 246);
+  --bg-sub-color: rgb(224, 223, 223);
   --text-primary-color: rgb(0, 0, 0);
   --text-secondary-color: rgb(33, 33, 33);
   --text-tertiary-color: rgb(44, 34, 34);
-  --border-color: #634244;
+  --border-color: #a9a8a8;
   --focus-color: #cf8a8a;
 }
 
 body[data-theme="dark"] {
   --bg-main-color: rgb(10, 10, 10);
+  --bg-sub-color: rgb(40, 40, 40);
   --text-primary-color: rgb(255, 255, 255);
   --text-secondary-color: rgb(163, 163, 163);
   --text-tertiary-color: rgb(115, 115, 115);

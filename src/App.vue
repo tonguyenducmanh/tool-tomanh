@@ -1,13 +1,19 @@
 <template>
-  <TDHeader></TDHeader>
-  <RouterView />
+  <div class="td-container">
+    <TDSidebar />
+    <div class="td-main">
+      <TDHeader></TDHeader>
+      <RouterView />
+    </div>
+  </div>
 </template>
 
 <script>
+import TDSidebar from "@/views/TDSidebar.vue";
 import TDHeader from "@/views/TDHeader.vue";
 import "@/common/TDPrototype.js";
 export default {
-  components: { TDHeader },
+  components: { TDSidebar, TDHeader },
   created() {
     let me = this;
     console.log("App is running success: " + new Date());
@@ -31,4 +37,15 @@ export default {
 </script>
 <style lang="scss">
 @import "@/styles/main.scss";
+.td-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  .td-main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+}
 </style>
