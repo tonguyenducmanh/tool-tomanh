@@ -18,6 +18,7 @@ const createWindow = () => {
       preload: path.join(__dirname, "preload.js"),
     },
   });
+  mainWindow.removeMenu();
   mainWindow.maximize(); // fills screen without hiding taskbar
   mainWindow.show(); // show after maximizing
   // and load the index.html of the app.

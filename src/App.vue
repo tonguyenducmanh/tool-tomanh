@@ -4,7 +4,7 @@
 </template>
 
 <script setup>
-import "@/assets/main.css";
+import "@/styles/main.scss";
 import "@/common/Prototype.js";
 
 console.log("App is running success: " + new Date());
