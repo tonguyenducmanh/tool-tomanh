@@ -38,12 +38,15 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .td-input {
-  display: inline-block;
+  display: flex;
+  height: 100%;
+  width: 100%;
 
   input {
     border: 2px solid var(--border-color);
+    width: 100%;
     padding: var(--padding);
     border-radius: var(--border-radius);
   }

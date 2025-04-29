@@ -1,6 +1,11 @@
 <template>
   <div class="td-header">
-    <TDInput placeHolder="Tìm kiếm tool" @changeInput="handleSearchTool"></TDInput>
+    <div class="td-header-input">
+      <TDInput
+        placeHolder="Tìm kiếm tool"
+        @changeInput="handleSearchTool"
+      ></TDInput>
+    </div>
   </div>
 </template>
 
@@ -26,12 +31,19 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .td-header {
   width: 100%;
-  height: 50px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: var(--padding);
+  padding-bottom: var(--padding);
+  .td-header-input {
+    display: flex;
+    width: 40%;
+    height: 100%;
+  }
 }
 </style>
