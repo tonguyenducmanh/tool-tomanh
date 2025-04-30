@@ -108,7 +108,7 @@ function buildInsertAllScript(source) {
           }
         });
         let insertValuesText = insertValues.join(STRING_JOIN);
-        let insertScript = `insert into ${config.tableName} (${insertFieldText}) values (${insertValuesText})`;
+        let insertScript = `insert into ${config.schemaName}.${config.tableName} (${insertFieldText}) values (${insertValuesText})`;
         insertScripts.push(insertScript);
       }
     });
@@ -155,7 +155,7 @@ function buildDeleteAllScript(source) {
       } else {
         arrayPrimaryDelete = allPrimaryValue.join(STRING_JOIN);
       }
-      deleteScript = `delete from ${config.tableName} where ${config.primaryKeyField} in (${arrayPrimaryDelete})`;
+      deleteScript = `delete from ${config.schemaName}.${config.tableName} where ${config.primaryKeyField} in (${arrayPrimaryDelete})`;
     }
   }
   return deleteScript;
