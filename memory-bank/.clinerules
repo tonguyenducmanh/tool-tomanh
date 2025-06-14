@@ -1,0 +1,98 @@
+# Cline Rules for Utility-for-Dev
+
+## Project Patterns
+1. File Naming:
+   - Vue components: prefix `TD` (TDButton, TDInput, etc.)
+   - Utilities: prefix `TD` (TDEnum, TDUtility, etc.)
+   - Test files: suffix `.test.js` or `.spec.js`
+
+2. Code Style:
+   - Sử dụng ESLint và Prettier
+   - 2 spaces cho indentation
+   - Double quotes cho strings
+   - Semicolons required
+   - Trailing commas trong arrays và objects
+
+3. Component Structure:
+   - Separate template, script, style sections
+   - Props validation bắt buộc
+   - Events emit với prefix 'td:'
+   - SCSS scoped cho styles
+
+4. Folder Organization:
+   - /src/common: shared utilities
+   - /src/components: reusable components
+   - /src/views/tools: individual tool implementations
+   - /src/i18n: language files
+   - /src/router: routing configuration
+
+## Development Workflow
+1. Git:
+   - Branch prefix: feature/, bugfix/, hotfix/
+   - Commit message format: `type(scope): description`
+   - Pull request required for all changes
+
+2. Documentation:
+   - JSDoc cho functions và classes
+   - README.md cho mỗi tool
+   - i18n keys organized by feature
+
+3. Testing:
+   - Unit tests cho utilities
+   - Component tests cho UI
+   - E2E tests cho critical flows
+
+## Tool Implementation Guidelines
+1. Mỗi tool cần:
+   - Error handling
+   - Loading states
+   - Success/error feedback
+   - History tracking
+   - i18n support
+
+2. Performance:
+   - Lazy loading
+   - Debounce cho real-time updates
+   - Cache kết quả phổ biến
+   - Optimize cho large datasets
+
+3. UI/UX:
+   - Responsive design
+   - Dark/light mode support
+   - Clear feedback
+   - Keyboard shortcuts
+
+## Memory Bank Management
+1. Update activeContext.md khi:
+   - Triển khai feature mới
+   - Thay đổi technical decisions
+   - Phát hiện challenges mới
+
+2. Update progress.md khi:
+   - Hoàn thành task
+   - Tạo task mới
+   - Phát hiện issues
+
+3. Update systemPatterns.md khi:
+   - Thêm design patterns mới
+   - Thay đổi architecture
+   - Cập nhật technical stack
+
+## Known Preferences
+1. User Interface:
+   - Clear, minimal design
+   - Dark mode by default
+   - Instant feedback
+   - Keyboard-first approach
+
+2. Development:
+   - Modular code structure
+   - Strong type checking
+   - Comprehensive error handling
+   - Performance optimization
+
+3. Tools:
+   - Offline-first
+   - Fast processing
+   - Data persistence
+   - Cross-platform support
