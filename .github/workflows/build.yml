@@ -2,20 +2,19 @@ name: Build and Release Electron App
 
 on:
   push:
-    # Chỉ chạy khi push tag bắt đầu bằng "v" (ví dụ v1.0.0)
     tags:
       - "v*"
 
 permissions:
-  contents: write # Cấp quyền tạo release
+  contents: write
 
 jobs:
-  build-release:
+  build:
+    name: Build Electron app on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-
-    runs-on: ${{ matrix.os }}
+        os: [windows-latest, macos-latest, ubuntu-latest]
 
     steps:
       - name: Checkout repository
@@ -29,10 +28,36 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build and Release Electron app
-        uses: wenwuwu/action-electron-forge@v1.4.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      - name: Make Electron App
+        run: npm run web:build
+      - name: Make Electron App
+        run: npm run electron:build
 
-      # Nếu bạn có ký code cho macOS hoặc Windows, thêm bước giải mã certs ở đây
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.os }}-build
+          path: |
+            out/make/**/*
+            out/make/**/.zip
+            out/make/**/*.deb
+            out/make/**/*.dmg
+            out/make/**/*.exe
+            out/make/**/*.AppImage
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: ./artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./artifacts/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
