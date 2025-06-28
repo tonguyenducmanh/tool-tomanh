@@ -1,31 +1,44 @@
-name: Build/release
+name: Build and Release Electron App
 
-on: push
+on:
+  push:
+    # Chỉ chạy khi push tag bắt đầu bằng "v" (ví dụ v1.0.0)
+    tags:
+      - "v*"
+
+permissions:
+  contents: write # Cấp quyền tạo release
 
 jobs:
-  release:
-    runs-on: ${{ matrix.os }}
-
+  build-release:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v1
+    runs-on: ${{ matrix.os }}
 
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Electron Builder Action
-        uses: samuelmeuli/action-electron-builder@v1.6.0
-        with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token }}
+      - name: Install dependencies
+        run: npm install
 
-          # If the commit is tagged with a version (e.g. "v1.0.0"),
-          # release the app after building
+      - name: Build app web
+        run: npm run web:build
+
+      - name: Build app desktop
+        run: npm run electron:build
+
+      - name: Build and Release Electron app
+        uses: kindlyops/action-electron-forge@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+
+      # Nếu bạn có ký code cho macOS hoặc Windows, thêm bước giải mã certs ở đây
