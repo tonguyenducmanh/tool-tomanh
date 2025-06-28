@@ -29,12 +29,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build app web
-        run: npm run web:build
-
-      - name: Build app desktop
-        run: npm run electron:build
-
       - name: Build and Release Electron app
         uses: wenwuwu/action-electron-forge@v1.4.0
         with:
