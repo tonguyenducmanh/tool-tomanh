@@ -5,10 +5,16 @@
   "description": "Advanced Chrome Extension để bypass CORS, thực thi curl commands, và xử lý API requests cho tool tomanh",
   "author": "tool tomanh contributors",
   "homepage_url": "https://tool.tomanh.com",
-  "permissions": ["storage", "scripting"],
+  "permissions": [
+    "storage",
+    "webRequest",
+    "declarativeNetRequest",
+    "scripting"
+  ],
   "host_permissions": ["<all_urls>"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "action": {
     "default_popup": "popup.html",
@@ -28,8 +34,7 @@
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"],
-      "run_at": "document_start",
-      "all_frames": true
+      "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
