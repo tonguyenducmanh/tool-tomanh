@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "tool tomanh api helper",
   "version": "2.0.0",
-  "description": "Advanced Chrome Extension để bypass CORS, thực thi curl commands, và xử lý API requests cho tool tomanh",
+  "description": "Hỗ trợ các tool bypass policy của trình duyệt để develop dễ hơn cho tool tomanh",
   "author": "tool tomanh contributors",
   "homepage_url": "https://tool.tomanh.com",
   "permissions": [
