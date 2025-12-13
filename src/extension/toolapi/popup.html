@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tomanh Tool helper</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        user-select: none;
+      }
+
+      html,
+      body {
+        width: 300px;
+        height: 300px;
+        overflow: hidden;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        position: relative;
+        background: linear-gradient(135deg, #0a2e2e 0%, #1a3d3d 100%);
+      }
+
+      #bgCanvas {
+        width: 300px;
+        height: 300px;
+        z-index: 1;
+      }
+
+      .content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 300px;
+        height: 300px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 20px;
+        text-align: center;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 30px rgba(66, 184, 131, 0.4);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 0 40px rgba(66, 184, 131, 0.7);
+          transform: scale(1.05);
+        }
+      }
+
+      h1 {
+        font-size: 24px;
+        color: #42b883;
+        text-shadow: 0 0 15px rgba(66, 184, 131, 0.6);
+        font-weight: 600;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+          box-shadow: 0 0 10px #42b883;
+        }
+        50% {
+          opacity: 0.4;
+          box-shadow: 0 0 5px #42b883;
+        }
+      }
+
+      .main-btn {
+        background: linear-gradient(135deg, #42b883 0%, #35a874 100%);
+        color: white;
+        border: none;
+        padding: 15px 20px;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(66, 184, 131, 0.5);
+        width: 100%;
+        max-width: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .main-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(66, 184, 131, 0.7);
+        background: linear-gradient(135deg, #4fc08d 0%, #42b883 100%);
+      }
+
+      .main-btn:active {
+        transform: translateY(-1px);
+      }
+
+      .footer {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 15px;
+        color: rgba(255, 255, 255, 0.5);
+      }
+      a {
+        text-decoration: none;
+      }
+      .description {
+        font-size: 15px;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 25px 0;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <canvas id="bgCanvas" width="300" height="300"></canvas>
+      <div class="content">
+        <h1>Tool helper</h1>
+        <span class="description">
+          Hỗ trợ các tool bypass policy của trình duyệt để develop dễ hơn
+        </span>
+        <a
+          class="main-btn"
+          href="https://tool.tomanh.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>tool.tomanh.com</span>
+        </a>
+      </div>
+
+      <div class="footer">• Made with 💚 •</div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
