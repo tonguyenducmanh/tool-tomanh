@@ -1,4 +1,7 @@
-// Background Service Worker - Handles API requests and CORS bypass
+// background.js - Service Worker (MV3)
+
+const abortControllers = new Map();
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "callAPI") {
     handleAPICall(request.data)
@@ -11,53 +14,53 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           body: null,
         });
       });
-    // Return true to indicate we will send a response asynchronously
     return true;
+  }
+
+  if (request.action === "cancelAPI") {
+    const { requestId } = request;
+    const controller = abortControllers.get(requestId);
+
+    if (controller) {
+      controller.abort();
+      abortControllers.delete(requestId);
+    }
+
+    sendResponse({ success: true });
   }
 });
 
 /**
- * Make an API call without CORS restrictions
- * @param {Object} data - API request data
- * @param {string} data.url - API endpoint URL
- * @param {string} data.method - HTTP method (GET, POST, PUT, DELETE, etc.)
- * @param {Object} data.headers - Request headers
- * @param {string} data.body - Request body
- * @returns {Promise<Object>} Response object
+ * Call API with AbortController
  */
 async function handleAPICall(data) {
-  const { url, method, headers, body } = data;
+  const { url, method, headers, body, requestId } = data;
 
-  if (!url) {
-    throw new Error("URL is required");
-  }
+  if (!url) throw new Error("URL is required");
+
+  const controller = new AbortController();
+  abortControllers.set(requestId, controller);
 
   const options = {
     method: method || "GET",
     headers: headers || {},
+    signal: controller.signal,
   };
 
-  // Add body for applicable methods
-  if (body) {
-    options.body = body;
-  }
+  if (body) options.body = body;
 
   try {
     const response = await fetch(url, options);
-    const contentType = response.headers.get("content-type");
-    let responseBody;
+    const contentType = response.headers.get("content-type") || "";
+    const rawText = await response.text();
 
-    // Parse response based on content type
-    if (contentType && contentType.includes("application/json")) {
+    abortControllers.delete(requestId);
+
+    let parsedBody = rawText;
+    if (contentType.includes("application/json")) {
       try {
-        responseBody = await response.json();
-      } catch (e) {
-        responseBody = await response.text();
-      }
-    } else if (contentType && contentType.includes("text")) {
-      responseBody = await response.text();
-    } else {
-      responseBody = await response.text();
+        parsedBody = JSON.parse(rawText);
+      } catch (_) {}
     }
 
     return {
@@ -65,10 +68,16 @@ async function handleAPICall(data) {
       status: response.status,
       statusText: response.statusText,
       headers: Object.fromEntries(response.headers.entries()),
-      body: responseBody,
-      contentType: contentType,
+      body: parsedBody,
+      contentType,
     };
   } catch (error) {
+    abortControllers.delete(requestId);
+
+    if (error.name === "AbortError") {
+      throw new Error("Request was cancelled");
+    }
+
     throw new Error(`API Call Failed: ${error.message}`);
   }
 }

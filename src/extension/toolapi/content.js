@@ -1,3 +1,6 @@
+// content.js
+
+// Inject injected.js vào page
 const script = document.createElement("script");
 script.src = chrome.runtime.getURL("injected.js");
 script.onload = function () {
@@ -5,25 +8,21 @@ script.onload = function () {
 };
 (document.head || document.documentElement).appendChild(script);
 
-// Content Script - Listen for messages from web page and relay to background
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "callAPI") {
-    // Forward to background worker
-    chrome.runtime.sendMessage(request, sendResponse);
-    return true;
-  }
-});
-
-// Also listen for messages from the page via postMessage
+// Listen message từ injected.js
 window.addEventListener("message", (event) => {
   if (event.source !== window) return;
 
+  // Gửi request
   if (event.data.type === "API_REQUEST") {
-    // Forward to background worker
     chrome.runtime.sendMessage(
-      { action: "callAPI", data: event.data.payload },
+      {
+        action: "callAPI",
+        data: {
+          ...event.data.payload,
+          requestId: event.data.id,
+        },
+      },
       (response) => {
-        // Send response back to page
         window.postMessage(
           {
             type: "API_RESPONSE",
@@ -34,5 +33,13 @@ window.addEventListener("message", (event) => {
         );
       }
     );
+  }
+
+  // Hủy request
+  if (event.data.type === "API_CANCEL") {
+    chrome.runtime.sendMessage({
+      action: "cancelAPI",
+      requestId: event.data.id,
+    });
   }
 });

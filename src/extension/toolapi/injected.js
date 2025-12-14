@@ -1,33 +1,38 @@
-// injected.js - Script được inject vào page context
+// injected.js - chạy trong page context
 
 (function () {
   "use strict";
 
-  // Injected Script - Simple API helper
-  window.__toolTomanh = {
-    callAPI: async function (options) {
-      return new Promise((resolve, reject) => {
-        const id = `api_${Date.now()}_${Math.random()}`;
+  let pendingRequests = new Map();
 
-        // Listen for response
-        const listener = (event) => {
+  window.__toolTomanh = {
+    /**
+     * callAPI trả về { promise, cancel }
+     */
+    callAPI(options) {
+      let id = `api_${Date.now()}_${Math.random()}`;
+
+      let promise = new Promise((resolve, reject) => {
+        let listener = (event) => {
           if (event.data.type === "API_RESPONSE" && event.data.id === id) {
             window.removeEventListener("message", listener);
-            if (event.data.payload.success) {
+            pendingRequests.delete(id);
+
+            if (event.data.payload?.success) {
               resolve(event.data.payload);
             } else {
-              reject(new Error(event.data.payload.error));
+              reject(new Error(event.data.payload?.error || "Unknown error"));
             }
           }
         };
 
+        pendingRequests.set(id, { reject });
         window.addEventListener("message", listener);
 
-        // Send request
         window.postMessage(
           {
             type: "API_REQUEST",
-            id: id,
+            id,
             payload: {
               url: options.url,
               method: options.method || "GET",
@@ -37,13 +42,26 @@
           },
           "*"
         );
-
-        // Timeout
-        setTimeout(() => {
-          window.removeEventListener("message", listener);
-          reject(new Error("API call timeout"));
-        }, 30000);
       });
+
+      return {
+        promise,
+        cancel() {
+          window.postMessage(
+            {
+              type: "API_CANCEL",
+              id,
+            },
+            "*"
+          );
+
+          let pending = pendingRequests.get(id);
+          if (pending) {
+            pending.reject(new Error("Request cancelled by user"));
+            pendingRequests.delete(id);
+          }
+        },
+      };
     },
   };
 })();
