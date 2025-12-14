@@ -46,6 +46,4 @@
       });
     },
   };
-
-  console.log("[Tool Tomanh] API Helper ready");
 })();
