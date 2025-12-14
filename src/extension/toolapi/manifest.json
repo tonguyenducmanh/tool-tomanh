@@ -9,7 +9,8 @@
     "storage",
     "webRequest",
     "declarativeNetRequest",
-    "scripting"
+    "scripting",
+    "activeTab"
   ],
   "host_permissions": ["<all_urls>"],
   "background": {
@@ -20,15 +21,15 @@
     "default_popup": "popup.html",
     "default_title": "tool tomanh api helper",
     "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+      "16": "icons/disabled/icon16.png",
+      "48": "icons/disabled/icon48.png",
+      "128": "icons/disabled/icon128.png"
     }
   },
   "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "icons/disabled/icon16.png",
+    "48": "icons/disabled/icon48.png",
+    "128": "icons/disabled/icon128.png"
   },
   "content_scripts": [
     {

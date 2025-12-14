@@ -1,3 +1,12 @@
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.action.setIcon({
+    path: {
+      16: "icons/disabled/icon16.png",
+      48: "icons/disabled/icon48.png",
+      128: "icons/disabled/icon128.png",
+    },
+  });
+});
 class AnimatedBackground {
   constructor() {
     this.canvas = document.getElementById("bgCanvas");
@@ -207,3 +216,53 @@ class AnimatedBackground {
 }
 
 new AnimatedBackground();
+
+async function getCurrentDomain() {
+  const [tab] = await chrome.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
+
+  if (!tab?.url) return null;
+  return new URL(tab.url).hostname;
+}
+
+(async function initEnableToggle() {
+  const checkbox = document.getElementById("enableSite");
+  if (!checkbox) return;
+
+  const domain = await getCurrentDomain();
+  if (!domain) {
+    checkbox.disabled = true;
+    return;
+  }
+
+  const { enabledSites = [] } = await chrome.storage.local.get("enabledSites");
+
+  checkbox.checked = enabledSites.includes(domain);
+
+  checkbox.addEventListener("change", async () => {
+    let sites = enabledSites.slice();
+
+    if (checkbox.checked) {
+      if (!sites.includes(domain)) sites.push(domain);
+    } else {
+      sites = sites.filter((d) => d !== domain);
+    }
+
+    await chrome.storage.local.set({ enabledSites: sites });
+
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+
+    if (tab?.id && tab?.url) {
+      chrome.runtime.sendMessage({
+        action: "updateIcon",
+        tabId: tab.id,
+        url: tab.url,
+      });
+    }
+  });
+})();

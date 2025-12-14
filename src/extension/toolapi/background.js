@@ -1,19 +1,80 @@
 // background.js - Service Worker (MV3)
+async function updateExtensionIcon(tabId, url) {
+  if (!tabId || !url) return;
+
+  const domain = new URL(url).hostname;
+  const { enabledSites = [] } = await chrome.storage.local.get("enabledSites");
+
+  const enabled = enabledSites.includes(domain);
+
+  await chrome.action.setIcon({
+    tabId,
+    path: enabled
+      ? {
+          16: "icons/enabled/icon16.png",
+          48: "icons/enabled/icon48.png",
+          128: "icons/enabled/icon128.png",
+        }
+      : {
+          16: "icons/disabled/icon16.png",
+          48: "icons/disabled/icon48.png",
+          128: "icons/disabled/icon128.png",
+        },
+  });
+
+  await chrome.action.setTitle({
+    tabId,
+    title: enabled
+      ? "tool tomanh api helper (Enabled on this site)"
+      : "tool tomanh api helper (Disabled on this site)",
+  });
+}
 
 const abortControllers = new Map();
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "updateIcon") {
+    updateExtensionIcon(request.tabId, request.url);
+    sendResponse({ success: true });
+    return;
+  }
+
   if (request.action === "callAPI") {
-    handleAPICall(request.data)
-      .then(sendResponse)
-      .catch((error) => {
+    const tabUrl = sender.tab?.url;
+
+    if (!tabUrl) {
+      sendResponse({
+        success: false,
+        error: "No tab context",
+      });
+      return true;
+    }
+
+    const domain = new URL(tabUrl).hostname;
+
+    chrome.storage.local.get("enabledSites", ({ enabledSites = [] }) => {
+      if (!enabledSites.includes(domain)) {
         sendResponse({
           success: false,
-          error: error.message,
+          error: "Extension is disabled on this site",
           status: null,
           body: null,
         });
-      });
+        return;
+      }
+
+      handleAPICall(request.data)
+        .then(sendResponse)
+        .catch((error) => {
+          sendResponse({
+            success: false,
+            error: error.message,
+            status: null,
+            body: null,
+          });
+        });
+    });
+
     return true;
   }
 
@@ -81,3 +142,14 @@ async function handleAPICall(data) {
     throw new Error(`API Call Failed: ${error.message}`);
   }
 }
+
+chrome.tabs.onActivated.addListener(async ({ tabId }) => {
+  const tab = await chrome.tabs.get(tabId);
+  if (tab?.url) updateExtensionIcon(tabId, tab.url);
+});
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === "complete" && tab?.url) {
+    updateExtensionIcon(tabId, tab.url);
+  }
+});
