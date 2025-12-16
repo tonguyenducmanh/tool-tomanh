@@ -13,66 +13,17 @@ Kiểm tra Go:
 
 ```bash
 go version
+```
 
 ## 2. Build agent
 
-### 2.1 Build cho máy hiện tại
+Chạy file build all
 
 ```
-
-go build -o tomanh-agent tool_api_agent.go
-
+./build_all.sh
 ```
 
-### 2.2 Build cho macOS
-
-Mac Intel
-
-```
-
-GOOS=darwin GOARCH=amd64 go build -o tomanh-agent-mac-intel tool_api_agent.go
-
-```
-
-Mac Apple Silicon
-
-```
-
-GOOS=darwin GOARCH=arm64 go build -o tomanh-agent-mac-arm tool_api_agent.go
-
-```
-
-Linux x86_64
-
-```
-
-GOOS=linux GOARCH=amd64 go build -o tomanh-agent-linux tool_api_agent.go
-
-```
-
-Linux ARM64:
-
-```
-
-GOOS=linux GOARCH=arm64 go build -o tomanh-agent-linux-arm tool_api_agent.go
-
-```
-
-Window x86_x64
-```
-
-GOOS=windows GOARCH=amd64 go build -o tomanh-agent.exe tool_api_agent.go
-
-```
-
-Window ARM64
-```
-
-GOOS=windows GOARCH=arm64 go build -o tomanh-agent-arm.exe tool_api_agent.go
-
-```
-
-### 3. Chạy agent
+## 3. Chạy agent
 
 3.1 macOS
 

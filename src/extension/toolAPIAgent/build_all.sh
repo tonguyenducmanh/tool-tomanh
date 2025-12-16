@@ -2,7 +2,7 @@
 
 set -e
 
-APP_NAME="tomanh-agent"
+APP_NAME="./dist/tomanh-agent"
 SRC_FILE="tool_api_agent.go"
 
 echo "==> Checking Go version"
