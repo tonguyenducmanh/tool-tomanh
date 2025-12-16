@@ -8,9 +8,6 @@ SRC_FILE="tool_api_agent.go"
 echo "==> Checking Go version"
 go version
 
-echo "==> Build for current OS"
-go build -o ${APP_NAME} ${SRC_FILE}
-
 echo "==> Build macOS Intel (amd64)"
 GOOS=darwin GOARCH=amd64 go build -o ${APP_NAME}-mac-intel ${SRC_FILE}
 
