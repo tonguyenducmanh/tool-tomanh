@@ -12,10 +12,10 @@ import (
 )
 
 type UIRequest struct {
-	ApiURL     string `json:"apiUrl"`
-	HttpMethod string `json:"httpMethod"`
+	ApiURL      string `json:"apiUrl"`
+	HttpMethod  string `json:"httpMethod"`
 	HeadersText string `json:"headersText"`
-	BodyText   string `json:"bodyText"`
+	BodyText    string `json:"bodyText"`
 }
 
 func parseHeaders(text string) map[string]string {
@@ -115,7 +115,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(resp.StatusCode)
 	w.Write(respBody)
 }
-
 
 func main() {
 	log.Println("Agent running at http://127.0.0.1:7777")
