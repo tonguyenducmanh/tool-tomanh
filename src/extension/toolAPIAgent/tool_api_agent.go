@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"time"
 )
 
 type UIRequest struct {
@@ -87,7 +86,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	client := &http.Client{
 		Transport: tr,
-		Timeout:   60 * time.Second,
+		Timeout:   0,
 	}
 
 	resp, err := client.Do(req)
