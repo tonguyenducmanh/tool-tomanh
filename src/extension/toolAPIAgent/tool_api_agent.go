@@ -106,6 +106,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	respBody, _ := io.ReadAll(resp.Body)
 
 	for k, vals := range resp.Header {
+		// bỏ việc gán access-control, cái này sẽ do agent quyết định
+		if strings.HasPrefix(strings.ToLower(k), "access-control-") {
+			continue
+		}
 		for _, v := range vals {
 			w.Header().Add(k, v)
 		}
