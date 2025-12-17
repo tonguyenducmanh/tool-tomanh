@@ -58,6 +58,22 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// ===== LOG REQUEST =====
+	log.Println("=== API REQUEST ===")
+	log.Println("Method:", strings.ToUpper(uiReq.HttpMethod))
+	log.Println("URL:", uiReq.ApiURL)
+	log.Println("Headers:")
+
+	for k, v := range parseHeaders(uiReq.HeadersText) {
+		log.Printf("  %s: %s\n", k, v)
+	}
+	if strings.TrimSpace(uiReq.BodyText) != "" {
+		log.Println("Body:")
+		log.Println(uiReq.BodyText)
+	} else {
+		log.Println("Body: <empty>")
+	}
+
 	var body io.Reader
 	if strings.TrimSpace(uiReq.BodyText) != "" {
 		body = bytes.NewBufferString(uiReq.BodyText)
@@ -93,10 +109,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		select {
 		case <-ctx.Done():
+			log.Println("Request cancelled by client")
 			w.WriteHeader(499)
 			w.Write([]byte("Request cancelled by client"))
 			return
 		default:
+			log.Println("Request error:", err.Error())
 			http.Error(w, err.Error(), 502)
 			return
 		}
@@ -104,6 +122,21 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	defer resp.Body.Close()
 
 	respBody, _ := io.ReadAll(resp.Body)
+
+	// ===== LOG RESPONSE =====
+	log.Println("=== API RESPONSE ===")
+	log.Println("Status Code:", resp.StatusCode)
+	log.Println("Response Headers:")
+
+	for k, v := range resp.Header {
+		log.Printf("  %s: %s\n", k, strings.Join(v, ", "))
+	}
+	if len(respBody) > 0 {
+		log.Println("Response Body:")
+		log.Println(string(respBody))
+	} else {
+		log.Println("Response Body: <empty>")
+	}
 
 	for k, vals := range resp.Header {
 		// bỏ việc gán access-control, cái này sẽ do agent quyết định
@@ -120,6 +153,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// BỔ SUNG LOG TIME (date + time + microseconds)
+	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
+
 	log.Println("Agent running at http://127.0.0.1:7777")
 	http.HandleFunc("/exec", handler)
 	log.Fatal(http.ListenAndServe("127.0.0.1:7777", nil))
