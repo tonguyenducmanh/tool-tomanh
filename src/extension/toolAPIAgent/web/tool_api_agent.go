@@ -54,7 +54,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	var uiReq UIRequest
 	if err := json.NewDecoder(r.Body).Decode(&uiReq); err != nil {
-		http.Error(w, err.Error(), 400)
+		w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -62,11 +62,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	log.Println("=== API REQUEST ===")
 	log.Println("Method:", strings.ToUpper(uiReq.HttpMethod))
 	log.Println("URL:", uiReq.ApiURL)
-	log.Println("Headers:")
 
 	for k, v := range parseHeaders(uiReq.HeadersText) {
 		log.Printf("  %s: %s\n", k, v)
 	}
+
 	if strings.TrimSpace(uiReq.BodyText) != "" {
 		log.Println("Body:")
 		log.Println(uiReq.BodyText)
@@ -86,7 +86,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		body,
 	)
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -110,12 +110,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		select {
 		case <-ctx.Done():
 			log.Println("Request cancelled by client")
-			w.WriteHeader(499)
-			w.Write([]byte("Request cancelled by client"))
+			w.Write([]byte("Request cancelled by user"))
 			return
 		default:
 			log.Println("Request error:", err.Error())
-			http.Error(w, err.Error(), 502)
+			w.Write([]byte(err.Error()))
 			return
 		}
 	}
@@ -126,11 +125,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	// ===== LOG RESPONSE =====
 	log.Println("=== API RESPONSE ===")
 	log.Println("Status Code:", resp.StatusCode)
-	log.Println("Response Headers:")
-
-	for k, v := range resp.Header {
-		log.Printf("  %s: %s\n", k, strings.Join(v, ", "))
-	}
 	if len(respBody) > 0 {
 		log.Println("Response Body:")
 		log.Println(string(respBody))
@@ -138,17 +132,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Response Body: <empty>")
 	}
 
-	for k, vals := range resp.Header {
-		// bỏ việc gán access-control, cái này sẽ do agent quyết định
-		if strings.HasPrefix(strings.ToLower(k), "access-control-") {
-			continue
-		}
-		for _, v := range vals {
-			w.Header().Add(k, v)
-		}
-	}
-
-	w.WriteHeader(resp.StatusCode)
+	// ===== GIỐNG ELECTRON: CHỈ TRẢ BODY =====
 	w.Write(respBody)
 }
 
