@@ -38,23 +38,13 @@ export function injectIpcMain() {
           rejectUnauthorized: false,
         }),
       });
-
-      return {
-        status: res.status,
-        headers: res.headers,
-        body: res.data,
-      };
+      return res.data;
     } catch (err) {
       if (err.name === "CanceledError") {
-        return {
-          status: 499,
-          body: "Request cancelled by user",
-        };
+        return "Request cancelled by user";
       }
-      return {
-        status: 502,
-        body: err.message,
-      };
+
+      return err.message;
     } finally {
       controllerMap.delete(signalId);
     }
