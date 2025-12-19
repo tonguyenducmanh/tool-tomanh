@@ -43,7 +43,7 @@ export function injectIpcMain() {
         status: res.status,
         statusText: res.statusText,
         headers: res.headers,
-        body: res.data,
+        body: JSON.stringify(res.data),
       };
     } catch (err) {
       if (err.name === "CanceledError") {
