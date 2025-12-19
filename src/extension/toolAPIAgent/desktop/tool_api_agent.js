@@ -1,6 +1,7 @@
 import { ipcMain } from "electron";
 import axios from "axios";
 import https from "https";
+
 const controllerMap = new Map();
 
 function parseHeaders(text = "") {
@@ -18,10 +19,9 @@ function parseHeaders(text = "") {
 }
 
 /**
- * Inject 1 số logic vào ipcmain của electron
+ * Inject logic vào ipcMain
  */
 export function injectIpcMain() {
-  // gán hàm vào ipcMain để main.js gọi
   ipcMain.handle("agent:exec", async (_, uiReq, signalId) => {
     const controller = new AbortController();
     controllerMap.set(signalId, controller);
@@ -38,13 +38,29 @@ export function injectIpcMain() {
           rejectUnauthorized: false,
         }),
       });
-      return res.data;
+
+      return {
+        status: res.status,
+        statusText: res.statusText,
+        headers: res.headers,
+        body: res.data,
+      };
     } catch (err) {
       if (err.name === "CanceledError") {
-        return "Request cancelled by user";
+        return {
+          status: 499,
+          statusText: "CANCELLED",
+          headers: {},
+          body: "Request cancelled by user",
+        };
       }
 
-      return err.message;
+      return {
+        status: 500,
+        statusText: "ERROR",
+        headers: {},
+        body: err.message,
+      };
     } finally {
       controllerMap.delete(signalId);
     }

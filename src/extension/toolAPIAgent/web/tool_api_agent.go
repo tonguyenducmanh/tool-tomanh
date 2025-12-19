@@ -17,6 +17,13 @@ type UIRequest struct {
 	BodyText    string `json:"bodyText"`
 }
 
+type APIResponse struct {
+	Status     int                 `json:"status"`
+	StatusText string              `json:"statusText"`
+	Headers    map[string][]string `json:"headers"`
+	Body       string              `json:"body"`
+}
+
 func parseHeaders(text string) map[string]string {
 	headers := map[string]string{}
 
@@ -32,9 +39,7 @@ func parseHeaders(text string) map[string]string {
 			continue
 		}
 
-		key := strings.TrimSpace(parts[0])
-		val := strings.TrimSpace(parts[1])
-		headers[key] = val
+		headers[strings.TrimSpace(parts[0])] = strings.TrimSpace(parts[1])
 	}
 
 	return headers
@@ -54,7 +59,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	var uiReq UIRequest
 	if err := json.NewDecoder(r.Body).Decode(&uiReq); err != nil {
-		w.Write([]byte(err.Error()))
+		json.NewEncoder(w).Encode(APIResponse{
+			Status:     500,
+			StatusText: "ERROR",
+			Body:       err.Error(),
+		})
 		return
 	}
 
@@ -86,7 +95,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		body,
 	)
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		json.NewEncoder(w).Encode(APIResponse{
+			Status:     500,
+			StatusText: "ERROR",
+			Body:       err.Error(),
+		})
 		return
 	}
 
@@ -109,12 +122,18 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		select {
 		case <-ctx.Done():
-			log.Println("Request cancelled by client")
-			w.Write([]byte("Request cancelled by user"))
+			json.NewEncoder(w).Encode(APIResponse{
+				Status:     499,
+				StatusText: "CANCELLED",
+				Body:       "Request cancelled by user",
+			})
 			return
 		default:
-			log.Println("Request error:", err.Error())
-			w.Write([]byte(err.Error()))
+			json.NewEncoder(w).Encode(APIResponse{
+				Status:     500,
+				StatusText: "ERROR",
+				Body:       err.Error(),
+			})
 			return
 		}
 	}
@@ -124,16 +143,17 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	// ===== LOG RESPONSE =====
 	log.Println("=== API RESPONSE ===")
-	log.Println("Status Code:", resp.StatusCode)
-	if len(respBody) > 0 {
-		log.Println("Response Body:")
-		log.Println(string(respBody))
-	} else {
-		log.Println("Response Body: <empty>")
-	}
+	log.Println("Status:", resp.StatusCode)
+	log.Println("Body:", string(respBody))
 
-	// ===== GIỐNG ELECTRON: CHỈ TRẢ BODY =====
-	w.Write(respBody)
+	// TRẢ JSON ĐẦY ĐỦ
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(APIResponse{
+		Status:     resp.StatusCode,
+		StatusText: resp.Status,
+		Headers:    resp.Header,
+		Body:       string(respBody),
+	})
 }
 
 func main() {
@@ -141,6 +161,7 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
 
 	log.Println("Agent running at http://127.0.0.1:7777")
+
 	http.HandleFunc("/exec", handler)
 	log.Fatal(http.ListenAndServe("127.0.0.1:7777", nil))
 }
