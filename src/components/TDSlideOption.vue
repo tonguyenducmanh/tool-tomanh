@@ -1,25 +1,24 @@
 <template>
   <div
-    class="td-radio-group"
+    class="td-slide-group"
     :class="{
       'layout-horizontal': layout === $tdEnum.coordinateAxes.horizontal,
-      'td-radio-group-no-margin': noMargin,
+      'td-slide-group-no-margin': noMargin,
     }"
   >
-    <div class="td-radio-group-label" v-if="label">
+    <div class="td-slide-group-label" v-if="label">
       {{ label.capitalize() }}
     </div>
-    <div v-for="(option, index) in options" :key="index">
-      <TDRadio
-        :value="option.value"
-        :label="option.label"
-        :name="generatedName"
-        :disabled="option.disabled"
-        :modelValue="modelValue"
-        @update:modelValue="$emit('update:modelValue', $event)"
+    <div v-if="options && options.length > 0" class="flex td-slide-group-area">
+      <div
+        class="td-slide-item"
+        :class="{ 'td-slide-item-selected': option.value == modelValue }"
+        v-for="(option, index) in options"
+        :key="index"
+        @click="changeSlideVal(option.value)"
       >
-        <slot :option="option"></slot>
-      </TDRadio>
+        <span>{{ option.label }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -28,7 +27,7 @@
 import tdEnum from "@/common/TDEnum.js";
 
 export default {
-  name: "TDRadioGroup",
+  name: "TDslideGroup",
   props: {
     label: {
       type: String,
@@ -66,32 +65,38 @@ export default {
   emits: ["update:modelValue"],
   computed: {
     generatedName() {
-      return this.name || `td-radio-group-${this.$.uid}`;
+      return this.name || `td-slide-group-${this.$.uid}`;
+    },
+  },
+  methods: {
+    changeSlideVal(e) {
+      let me = this;
+      me.$emit("update:modelValue", e);
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.td-radio-group {
+.td-slide-group {
   margin: var(--padding);
 
-  .td-radio-group-label {
+  .td-slide-group-label {
     margin-bottom: var(--padding);
     font-size: var(--font-size-l-medium);
     color: var(--text-secondary-color);
   }
 }
 
-.td-radio-group-no-margin {
+.td-slide-group-no-margin {
   margin: unset;
 }
 
-.td-radio-group.layout-horizontal {
+.td-slide-group.layout-horizontal {
   display: flex;
   flex-direction: row;
   align-items: end;
-  .td-radio-group-label {
+  .td-slide-group-label {
     margin-bottom: 0;
     margin-right: var(--padding);
   }
@@ -101,6 +106,20 @@ export default {
     &:last-child {
       margin-right: 0;
     }
+  }
+}
+.td-slide-group-area {
+  gap: var(--padding);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  .td-slide-item {
+    cursor: pointer;
+    padding: calc(var(--padding) / 2) var(--padding);
+    border-radius: var(--border-radius);
+  }
+  .td-slide-item-selected {
+    background-color: var(--focus-color);
+    color: var(--bg-main-color);
   }
 }
 </style>
