@@ -1,12 +1,12 @@
 use axum::{
-    routing::{get, post},
-    extract::State,
     Json, Router,
+    extract::State,
+    routing::{get, post},
 };
 use std::sync::Arc;
-use td_tool_model::{UIAPIRequest, UIAPIResponse};
 use td_tool_agent::execute_request;
-use tower_http::cors::{CorsLayer, Any};
+use td_tool_model::{UIAPIRequest, UIAPIResponse};
+use tower_http::cors::{Any, CorsLayer};
 
 struct AppState {
     // todo: bổ sung body
@@ -28,9 +28,7 @@ async fn main() {
         .with_state(shared_state)
         .layer(cors); // Thêm CORS layer
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:7777")
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:7777").await.unwrap();
 
     axum::serve(listener, app).await.unwrap();
 }
@@ -41,7 +39,7 @@ async fn health_check() -> &'static str {
 
 async fn exec_call_api(
     State(_state): State<Arc<AppState>>,
-    Json(body): Json<UIAPIRequest>
+    Json(body): Json<UIAPIRequest>,
 ) -> Json<UIAPIResponse> {
     let response = execute_request(body).await;
     let res = response.expect("Đã có lỗi xảy ra");

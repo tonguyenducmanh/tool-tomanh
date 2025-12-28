@@ -4,7 +4,6 @@ use std::sync::{Arc, Mutex};
 use td_tool_agent::execute_request;
 use td_tool_model::{UIAPIRequest, UIAPIResponse};
 
-
 // Quản lý các request đang chạy để có thể cancel
 type RequestStore = Arc<Mutex<HashMap<String, tokio::sync::oneshot::Sender<()>>>>;
 
@@ -14,7 +13,6 @@ async fn exec(
     signal_id: String,
     state: tauri::State<'_, RequestStore>,
 ) -> Result<UIAPIResponse, String> {
-
     // Thực hiện request
     let result = execute_request(request).await;
 
@@ -28,10 +26,7 @@ async fn exec(
 }
 
 #[tauri::command]
-async fn cancel(
-    signal_id: String,
-    state: tauri::State<'_, RequestStore>,
-) -> Result<(), String> {
+async fn cancel(signal_id: String, state: tauri::State<'_, RequestStore>) -> Result<(), String> {
     let mut store = state.lock().unwrap();
 
     if let Some(cancel_tx) = store.remove(&signal_id) {

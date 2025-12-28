@@ -1,6 +1,6 @@
-use td_tool_model::{UIAPIRequest, UIAPIResponse};
-use std::collections::HashMap;
 use serde_json;
+use std::collections::HashMap;
+use td_tool_model::{UIAPIRequest, UIAPIResponse};
 
 fn parse_headers(text: &str) -> HashMap<String, String> {
     let mut headers = HashMap::new();
@@ -33,9 +33,7 @@ fn parse_headers(text: &str) -> HashMap<String, String> {
 /**
 Thực hiện gọi nối API
 */
-pub async fn execute_request(
-    body: UIAPIRequest
-) -> Result<UIAPIResponse, String> {
+pub async fn execute_request(body: UIAPIRequest) -> Result<UIAPIResponse, String> {
     let url = body.api_url;
     let method = body.http_method;
     let headers_raw = body.headers_text;

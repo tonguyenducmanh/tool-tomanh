@@ -12,13 +12,12 @@ pub struct UIAPIRequest {
     pub body_text: Option<String>,
 }
 
-
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct UIAPIResponse{
+pub struct UIAPIResponse {
     // loại status response
     pub status: u16,
     // header response
     pub headers: String,
     // body response
-    pub body: String
+    pub body: String,
 }
