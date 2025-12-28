@@ -1,33 +1,9 @@
 // lib.rs
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use serde::{Deserialize, Serialize};
-use tauri::Manager;
 use td_tool_agent::execute_request;
 use td_tool_model::{UIAPIRequest, UIAPIResponse};
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RequestData {
-    #[serde(rename = "apiUrl")]
-    api_url: String,
-    #[serde(rename = "httpMethod")]
-    http_method: Option<String>,
-    #[serde(rename = "headersText")]
-    headers_text: Option<String>,
-    #[serde(rename = "bodyText")]
-    body_text: Option<String>,
-}
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ResponseData {
-    status: u16,
-    headers: HashMap<String, String>,
-    body: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ErrorResponse {
-    error: String,
-}
 
 // Quản lý các request đang chạy để có thể cancel
 type RequestStore = Arc<Mutex<HashMap<String, tokio::sync::oneshot::Sender<()>>>>;
