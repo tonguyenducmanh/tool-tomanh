@@ -141,13 +141,13 @@ async fn execute_request(
 
     // Execute với cancel support
     let response_future = client.execute(request);
-    
+
     tokio::select! {
         result = response_future => {
             match result {
                 Ok(response) => {
                     let status = response.status().as_u16();
-                    
+
                     // Parse response headers
                     let mut response_headers = HashMap::new();
                     for (key, value) in response.headers() {

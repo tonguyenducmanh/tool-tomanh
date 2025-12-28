@@ -6,7 +6,8 @@ use axum::{
 use serde_json::{Value, json};
 use std::sync::Arc;
 use td_tool_model::{UIAPIRequest, UIAPIResponse};
-
+use td_tool_agent::execute_request;
+use serde_json;
 struct AppState {
     // todo: bổ sung body
 }
@@ -34,9 +35,8 @@ async fn health_check() -> &'static str {
 async fn exec_call_api(
     State(_state): State<Arc<AppState>>,
     Json(body): Json<UIAPIRequest>
-) -> Json<Value> {
-    Json(json!({
-        "success": true,
-        "data": 42
-    }))
+) -> Json<UIAPIResponse> {
+    let response = execute_request(body).await;
+    let res = response.expect("Đã có lỗi xảy ra");
+    Json(res)
 }

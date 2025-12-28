@@ -1,6 +1,6 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct UIAPIRequest {
     // Tên của API
     pub api_url: String,
@@ -9,16 +9,14 @@ pub struct UIAPIRequest {
     // dánh sách các header của api, nối với nhau bởi \n
     pub headers_text: String,
     // nội dung body gọi api
-    pub body_text: String,
+    pub body_text: Option<String>,
 }
 
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct UIAPIResponse{
     // loại status response
-    pub status: i16,
-    // loại status response dạng text
-    pub status_text: String,
+    pub status: u16,
     // header response
     pub headers: String,
     // body response
