@@ -3,7 +3,7 @@ use axum::{
     extract::State,
     routing::{get, post},
 };
-use std::sync::Arc;
+use std::{sync::Arc, env};
 use td_tool_agent::execute_request;
 use td_tool_model::{UIAPIRequest, UIAPIResponse};
 use tower_http::cors::{Any, CorsLayer};
@@ -12,23 +12,40 @@ struct AppState {
     // todo: bổ sung body
 }
 
+fn get_port_from_args() -> u16 {
+    let args: Vec<String> = env::args().collect();
+
+    args.iter()
+        .position(|arg| arg == "--port")
+        .and_then(|i| args.get(i + 1))
+        .and_then(|p| p.parse::<u16>().ok())
+        .unwrap_or(7777) // port mặc định
+}
+
 #[tokio::main]
 async fn main() {
+    let port = get_port_from_args();
+    let addr = format!("0.0.0.0:{}", port);
+
     let shared_state = Arc::new(AppState {});
 
-    // Cấu hình CORS
+    // CORS
     let cors = CorsLayer::new()
-        .allow_origin(Any) // Cho phép tất cả origins (có thể cấu hình cụ thể hơn)
-        .allow_methods(Any) // Cho phép tất cả methods
-        .allow_headers(Any); // Cho phép tất cả headers
+        .allow_origin(Any)
+        .allow_methods(Any)
+        .allow_headers(Any);
 
     let app = Router::new()
         .route("/", get(health_check))
         .route("/exec", post(exec_call_api))
         .with_state(shared_state)
-        .layer(cors); // Thêm CORS layer
+        .layer(cors);
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:7777").await.unwrap();
+    let listener = tokio::net::TcpListener::bind(&addr)
+        .await
+        .expect("Không bind được port");
+
+    println!("API đang chạy tại http://{}", addr);
 
     axum::serve(listener, app).await.unwrap();
 }
