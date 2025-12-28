@@ -1,10 +1,10 @@
 {
-  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "$schema": "../../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "tool-tomanh",
   "version": "0.1.0",
   "identifier": "com.tomanh.tool",
   "build": {
-    "frontendDist": "../dist",
+    "frontendDist": "../../dist",
     "devUrl": "http://localhost:5173",
     "beforeDevCommand": "npm run web:dev",
     "beforeBuildCommand": "npm run web:build"
