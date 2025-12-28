@@ -3,11 +3,11 @@ use axum::{
     extract::State,
     Json, Router,
 };
-use serde_json::{Value, json};
 use std::sync::Arc;
 use td_tool_model::{UIAPIRequest, UIAPIResponse};
 use td_tool_agent::execute_request;
-use serde_json;
+use tower_http::cors::{CorsLayer, Any};
+
 struct AppState {
     // todo: bổ sung body
 }
@@ -16,10 +16,17 @@ struct AppState {
 async fn main() {
     let shared_state = Arc::new(AppState {});
 
+    // Cấu hình CORS
+    let cors = CorsLayer::new()
+        .allow_origin(Any) // Cho phép tất cả origins (có thể cấu hình cụ thể hơn)
+        .allow_methods(Any) // Cho phép tất cả methods
+        .allow_headers(Any); // Cho phép tất cả headers
+
     let app = Router::new()
         .route("/", get(health_check))
         .route("/exec", post(exec_call_api))
-        .with_state(shared_state);
+        .with_state(shared_state)
+        .layer(cors); // Thêm CORS layer
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:7777")
         .await

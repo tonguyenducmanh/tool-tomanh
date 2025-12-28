@@ -1,9 +1,5 @@
 use td_tool_model::{UIAPIRequest, UIAPIResponse};
-
-// lib.rs
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
-use serde::{Deserialize, Serialize};
 use serde_json;
 
 fn parse_headers(text: &str) -> HashMap<String, String> {

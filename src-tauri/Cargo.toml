@@ -18,11 +18,6 @@ tauri-build = { version = "2.5.3", features = [] }
 [dependencies]
 td_tool_agent = {path="../src-backend/td_tool_agent"}
 td_tool_model = {path="../src-backend/td_tool_model"}
-serde_json = "1.0"
-serde = { version = "1.0", features = ["derive"] }
-log = "0.4"
 tauri = { version = "2.9.5", features = [] }
 tauri-plugin-log = "2"
-# Thêm dependencies mới cho HTTP client
-reqwest = { version = "0.12", features = ["json"] }
 tokio = { version = "1", features = ["full"] }
