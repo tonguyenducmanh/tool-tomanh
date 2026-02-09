@@ -1,15 +1,11 @@
 package banner
 
 import (
-	"fmt"
+	"td_core_service/td_common"
 )
 
-const banner = `
-Dev Tools started
-From TDManh with luv
-
-`
+const banner = "Dev Tools started - From TDManh with luv"
 
 func PrintBanner() {
-	fmt.Print(banner)
+	td_common.LogInfo(banner)
 }
