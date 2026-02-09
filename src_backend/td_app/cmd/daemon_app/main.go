@@ -7,9 +7,7 @@ import (
 	webApp "td_app/internal/web_app"
 )
 
-/**
- * khởi chạy api app + web app
- */
+// khởi chạy api app + web app
 func main() {
 	config := startUp.HandleStartUpLogic()
 	apiPort := &config.APIConfig.Port

@@ -5,9 +5,7 @@ import (
 	apiApp "td_core_service/external/api_app"
 )
 
-/**
- * khởi chạy api app
- */
+// khởi chạy api app
 func main() {
 	config := startUp.HandleStartUpLogic()
 	port := &config.APIConfig.Port
