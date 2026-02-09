@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"sync"
 	apiApp "td_app/internal/api_app"
 	startUp "td_app/internal/common"
@@ -13,12 +12,11 @@ import (
  */
 func main() {
 	config := startUp.HandleStartUpLogic()
-	apiPort := flag.Int("api-port", config.APIConfig.Port, "Port to run the server")
-	apiTrace := flag.Bool("api-trace", config.APIConfig.EnableTrace, "Hiển thị log chi tiết cho Web server")
-	mockPort := flag.Int("mock-port", config.MockAPIConfig.Port, "Port cho Mock API server")
-	webPort := flag.Int("web-port", config.WebConfig.Port, "Port cho Web server")
-	webTrace := flag.Bool("web-trace", config.WebConfig.EnableTrace, "Hiển thị log chi tiết cho Web server")
-	flag.Parse()
+	apiPort := &config.APIConfig.Port
+	apiTrace := &config.APIConfig.EnableTrace
+	mockPort := &config.MockAPIConfig.Port
+	webPort := &config.WebConfig.Port
+	webTrace := &config.WebConfig.EnableTrace
 
 	var wg sync.WaitGroup
 	wg.Add(2)
