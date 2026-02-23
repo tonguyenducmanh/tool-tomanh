@@ -9,25 +9,22 @@ import (
 
 // khởi chạy api app + web app
 func main() {
-	config := startUp.HandleStartUpLogic()
-	apiPort := &config.APIConfig.Port
-	apiTrace := &config.APIConfig.EnableTrace
-	mockPort := &config.MockAPIConfig.Port
-	webPort := &config.WebConfig.Port
-	webTrace := &config.WebConfig.EnableTrace
-
+	cfg := startUp.HandleStartUpLogic()
 	var wg sync.WaitGroup
-	wg.Add(2)
 
-	go func() {
-		defer wg.Done()
-		apiApp.RunAPIApp(apiPort, mockPort, apiTrace)
-	}()
+	// Khởi chạy API App
+	if cfg.APIConfig.Enable {
+		wg.Go(func() {
+			apiApp.RunAPIApp(&cfg.APIConfig.Port, &cfg.MockAPIConfig.Port, &cfg.APIConfig.EnableTrace)
+		})
+	}
 
-	go func() {
-		defer wg.Done()
-		webApp.RunWebApp(webPort, webTrace)
-	}()
+	// Khởi chạy Web App
+	if cfg.WebConfig.Enable {
+		wg.Go(func() {
+			webApp.RunWebApp(&cfg.WebConfig.Port, &cfg.WebConfig.EnableTrace)
+		})
+	}
 
-	wg.Wait() // chờ 2 service chạy xong
+	wg.Wait()
 }
