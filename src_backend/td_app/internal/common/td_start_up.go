@@ -2,13 +2,13 @@ package common
 
 import (
 	"td_app/internal/banner"
+	"td_config"
 	apiApp "td_core_service/external/api_app"
-	configGlobal "td_core_service/external/config"
 )
 
 // Xử lý các kịch bản cần thiết khi run app nói chung
-func HandleStartUpLogic() *configGlobal.TDCenterConfig {
-	centerConfig := configGlobal.GetConfigGlobal()
+func HandleStartUpLogic() *td_config.TDCenterConfig {
+	centerConfig := td_config.GetConfigGlobal()
 	banner.PrintBanner()
 	apiApp.InitDatabase()
 

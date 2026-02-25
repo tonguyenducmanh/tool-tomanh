@@ -8,6 +8,10 @@ require modernc.org/sqlite v1.44.3 // indirect
 
 require td_core_service v0.0.0-00010101000000-000000000000
 
+replace td_config => ../td_config
+
+require td_config v0.0.0-00010101000000-000000000000
+
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
