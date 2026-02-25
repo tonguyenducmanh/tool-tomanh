@@ -7,9 +7,6 @@ import (
 
 // khởi chạy api app
 func main() {
-	config := startUp.HandleStartUpLogic()
-	port := &config.APIConfig.Port
-	mockPort := &config.MockAPIConfig.Port
-	trace := &config.APIConfig.EnableTrace
-	apiApp.RunAPIApp(port, mockPort, trace)
+	startUp.HandleStartUpLogic()
+	apiApp.RunAPIApp()
 }

@@ -5,6 +5,6 @@ import (
 )
 
 // Chạy web app
-func RunWebApp(webPort *int, webTrace *bool) {
-	webApp.RunWebApp(webPort, webTrace)
+func RunWebApp() {
+	webApp.RunWebApp()
 }

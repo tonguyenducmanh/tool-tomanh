@@ -15,14 +15,14 @@ func main() {
 	// Khởi chạy API App
 	if cfg.APIConfig.Enable {
 		wg.Go(func() {
-			apiApp.RunAPIApp(&cfg.APIConfig.Port, &cfg.MockAPIConfig.Port, &cfg.APIConfig.EnableTrace)
+			apiApp.RunAPIApp()
 		})
 	}
 
 	// Khởi chạy Web App
 	if cfg.WebConfig.Enable {
 		wg.Go(func() {
-			webApp.RunWebApp(&cfg.WebConfig.Port, &cfg.WebConfig.EnableTrace)
+			webApp.RunWebApp()
 		})
 	}
 
