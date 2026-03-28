@@ -1,6 +1,14 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export const __wbg_rdpfile_free: (a: number, b: number) => void;
+export const rdpfile_create: () => number;
+export const rdpfile_getInt: (a: number, b: number, c: number) => number;
+export const rdpfile_getStr: (a: number, b: number, c: number) => [number, number];
+export const rdpfile_insertInt: (a: number, b: number, c: number, d: number) => void;
+export const rdpfile_insertStr: (a: number, b: number, c: number, d: number, e: number) => void;
+export const rdpfile_parse: (a: number, b: number, c: number) => void;
+export const rdpfile_write: (a: number) => [number, number];
 export const __wbg_clipboarddata_free: (a: number, b: number) => void;
 export const __wbg_clipboarditem_free: (a: number, b: number) => void;
 export const __wbg_deviceevent_free: (a: number, b: number) => void;
@@ -54,17 +62,13 @@ export const sessionbuilder_renderCanvas: (a: number, b: any) => number;
 export const sessionbuilder_serverDomain: (a: number, b: number, c: number) => number;
 export const sessionbuilder_setCursorStyleCallback: (a: number, b: any) => number;
 export const sessionbuilder_setCursorStyleCallbackContext: (a: number, b: any) => number;
+export const sessionbuilder_setDesktopScaleFactor: (a: number, b: number) => number;
+export const sessionbuilder_setEnableAudioPlayback: (a: number, b: number) => number;
+export const sessionbuilder_setEnableServerPointer: (a: number, b: number) => number;
+export const sessionbuilder_setPointerSoftwareRendering: (a: number, b: number) => number;
 export const sessionbuilder_username: (a: number, b: number, c: number) => number;
 export const sessionterminationinfo_reason: (a: number) => [number, number];
 export const setup: (a: number, b: number) => void;
-export const __wbg_rdpfile_free: (a: number, b: number) => void;
-export const rdpfile_create: () => number;
-export const rdpfile_getInt: (a: number, b: number, c: number) => number;
-export const rdpfile_getStr: (a: number, b: number, c: number) => [number, number];
-export const rdpfile_insertInt: (a: number, b: number, c: number, d: number) => void;
-export const rdpfile_insertStr: (a: number, b: number, c: number, d: number, e: number) => void;
-export const rdpfile_parse: (a: number, b: number, c: number) => void;
-export const rdpfile_write: (a: number) => [number, number];
 export const __wbg_extension_free: (a: number, b: number) => void;
 export const extension_create: (a: number, b: number, c: any) => number;
 export const __wbg_rdcleanpathdetails_free: (a: number, b: number) => void;

@@ -192,6 +192,10 @@ export class SessionBuilder {
     serverDomain(server_domain: string): SessionBuilder;
     setCursorStyleCallback(callback: Function): SessionBuilder;
     setCursorStyleCallbackContext(context: any): SessionBuilder;
+    setDesktopScaleFactor(desktop_scale_factor: number): SessionBuilder;
+    setEnableAudioPlayback(enable_audio_playback: boolean): SessionBuilder;
+    setEnableServerPointer(enable_server_pointer: boolean): SessionBuilder;
+    setPointerSoftwareRendering(pointer_software_rendering: boolean): SessionBuilder;
     username(username: string): SessionBuilder;
 }
 
@@ -208,6 +212,14 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
+    readonly __wbg_rdpfile_free: (a: number, b: number) => void;
+    readonly rdpfile_create: () => number;
+    readonly rdpfile_getInt: (a: number, b: number, c: number) => number;
+    readonly rdpfile_getStr: (a: number, b: number, c: number) => [number, number];
+    readonly rdpfile_insertInt: (a: number, b: number, c: number, d: number) => void;
+    readonly rdpfile_insertStr: (a: number, b: number, c: number, d: number, e: number) => void;
+    readonly rdpfile_parse: (a: number, b: number, c: number) => void;
+    readonly rdpfile_write: (a: number) => [number, number];
     readonly __wbg_clipboarddata_free: (a: number, b: number) => void;
     readonly __wbg_clipboarditem_free: (a: number, b: number) => void;
     readonly __wbg_deviceevent_free: (a: number, b: number) => void;
@@ -261,17 +273,13 @@ export interface InitOutput {
     readonly sessionbuilder_serverDomain: (a: number, b: number, c: number) => number;
     readonly sessionbuilder_setCursorStyleCallback: (a: number, b: any) => number;
     readonly sessionbuilder_setCursorStyleCallbackContext: (a: number, b: any) => number;
+    readonly sessionbuilder_setDesktopScaleFactor: (a: number, b: number) => number;
+    readonly sessionbuilder_setEnableAudioPlayback: (a: number, b: number) => number;
+    readonly sessionbuilder_setEnableServerPointer: (a: number, b: number) => number;
+    readonly sessionbuilder_setPointerSoftwareRendering: (a: number, b: number) => number;
     readonly sessionbuilder_username: (a: number, b: number, c: number) => number;
     readonly sessionterminationinfo_reason: (a: number) => [number, number];
     readonly setup: (a: number, b: number) => void;
-    readonly __wbg_rdpfile_free: (a: number, b: number) => void;
-    readonly rdpfile_create: () => number;
-    readonly rdpfile_getInt: (a: number, b: number, c: number) => number;
-    readonly rdpfile_getStr: (a: number, b: number, c: number) => [number, number];
-    readonly rdpfile_insertInt: (a: number, b: number, c: number, d: number) => void;
-    readonly rdpfile_insertStr: (a: number, b: number, c: number, d: number, e: number) => void;
-    readonly rdpfile_parse: (a: number, b: number, c: number) => void;
-    readonly rdpfile_write: (a: number) => [number, number];
     readonly __wbg_extension_free: (a: number, b: number) => void;
     readonly extension_create: (a: number, b: number, c: any) => number;
     readonly __wbg_rdcleanpathdetails_free: (a: number, b: number) => void;
