@@ -1,7 +1,7 @@
 export const config = /*json-start*/{
   "mainAssemblyName": "Tools.NetWrapper.dll",
   "resources": {
-    "hash": "sha256-/e4JACDgeLB714AgSNBO5yAlS7tAelk0y7BBy6o/lmE=",
+    "hash": "sha256-sOmexfM8p6OMyIayVvF0N1MAoNpzHpitZMxDxBAiq4I=",
     "jsModuleNative": [
       {
         "name": "dotnet.native.js"
@@ -15,7 +15,7 @@ export const config = /*json-start*/{
     "wasmNative": [
       {
         "name": "dotnet.native.wasm",
-        "hash": "sha256-c28dx0kVG+Dos7fpy/OkmaK8RZOrWdg5mZ8wVgiGWio="
+        "hash": "sha256-2Os7D7owemodPn0Obg5pKiZmhL6dKF5xzg4J6eyUGX8="
       }
     ],
     "wasmSymbols": [
@@ -27,7 +27,7 @@ export const config = /*json-start*/{
       {
         "virtualPath": "System.Private.CoreLib.wasm",
         "name": "System.Private.CoreLib.wasm",
-        "hash": "sha256-d1DXKS4PW5bBRmKzQTCIHg2Mf1/BLCBigik6lYfKEH4="
+        "hash": "sha256-STGMDaxglYxauGxBOkzA6lK3zNl1Qh052zAk/eYrywo="
       },
       {
         "virtualPath": "System.Runtime.InteropServices.JavaScript.wasm",
@@ -39,12 +39,12 @@ export const config = /*json-start*/{
       {
         "virtualPath": "Npgsql.wasm",
         "name": "Npgsql.wasm",
-        "hash": "sha256-A8ZefxAklj5IjR4TGjgCgoqGdeuvxA6TzOss/eSUpQE="
+        "hash": "sha256-oXms7fWbf7ou19k2yC7Vy1wJUedQ9SdugiY2gN0mnLY="
       },
       {
         "virtualPath": "System.Collections.Concurrent.wasm",
         "name": "System.Collections.Concurrent.wasm",
-        "hash": "sha256-6ieKwxvhZQbx6pZcc8uzkGIpp/4N2tXlOpwyQ0Dy5Sk="
+        "hash": "sha256-dIh1mlx6QKr9Is51rQFVLJRcPSIbX82B5jYA4lxv5Vk="
       },
       {
         "virtualPath": "System.ComponentModel.Primitives.wasm",
@@ -69,7 +69,7 @@ export const config = /*json-start*/{
       {
         "virtualPath": "System.Memory.wasm",
         "name": "System.Memory.wasm",
-        "hash": "sha256-kuXhuWnT7UW/eBfMeYFz1w3kMyNT9xP3SdzPD4oo9UU="
+        "hash": "sha256-fFZcVQ+L6p4m9W6FyJm+PUadT/m6eIWPi12nkr6+9Gs="
       },
       {
         "virtualPath": "System.Text.Encodings.Web.wasm",
@@ -79,7 +79,7 @@ export const config = /*json-start*/{
       {
         "virtualPath": "System.Text.Json.wasm",
         "name": "System.Text.Json.wasm",
-        "hash": "sha256-0RBWIG9/T1ViaM0H9PUfW05YUXf2b+QTCNsB0pW8bZ0="
+        "hash": "sha256-sVjaOBu68/JKd+a11Ryo572T1SYdsJG5MjZdq6uSYmY="
       },
       {
         "virtualPath": "System.Text.RegularExpressions.wasm",
@@ -89,7 +89,7 @@ export const config = /*json-start*/{
       {
         "virtualPath": "Tools.NetWrapper.wasm",
         "name": "Tools.NetWrapper.wasm",
-        "hash": "sha256-qFIcVwDV7T9Crh9cD9Bf/y56zFahB45qS9NrUpftbc8="
+        "hash": "sha256-WNwehKPUelueuGRFH7kq6x6FEd3zBm2r7IN/ugTvsH0="
       }
     ]
   },
