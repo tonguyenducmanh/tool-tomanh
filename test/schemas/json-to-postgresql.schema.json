@@ -1,0 +1,305 @@
+{
+  "feature": "json-to-postgresql",
+  "version": "1.0.0",
+  "pbi_ref": "PBI-EXAMPLE-001",
+  "groupKey": "json",
+  "description": "Chuyển đổi JSON sang câu lệnh PostgreSQL INSERT / CREATE TABLE / DELETE",
+  "base_url": "http://localhost:5173",
+  "route": "/tools/json-to-postgresql",
+
+  "required_testids": [
+    "json-input-editor",
+    "sql-output-editor",
+    "btn-convert",
+    "btn-copy",
+    "btn-example",
+    "input-schema-name",
+    "input-table-name",
+    "input-primary-key",
+    "toggle-wrap-text",
+    "toggle-enable-highlight",
+    "toggle-enable-file-upload",
+    "toggle-create-table",
+    "toggle-delete-old"
+  ],
+
+  "flows": [
+    {
+      "id": "F001",
+      "name": "Convert JSON hợp lệ thành SQL INSERT",
+      "type": "happy_path",
+      "steps": [
+        {
+          "id": "S001",
+          "action": "navigate",
+          "target": { "testid": null },
+          "expect": { "url_contains": "/tools/json-to-postgresql" }
+        },
+        {
+          "id": "002",
+          "action": "click_button",
+          "target": { "testid": "slide-option-1" }
+        },
+        {
+          "id": "003",
+          "action": "fill_editor",
+          "target": { "testid": "json-input-editor", "language": "json" },
+          "data": { "ref": "mock_valid_json" },
+          "expect": { "element_has_content": "json-input-editor" }
+        },
+        {
+          "id": "004",
+          "action": "fill_input",
+          "target": { "testid": "input-schema-name" },
+          "data": { "value": "public" },
+          "expect": { "value": "public" }
+        },
+        {
+          "id": "005",
+          "action": "fill_input",
+          "target": { "testid": "input-table-name" },
+          "data": { "ref": "mock_table" },
+          "expect": { "value": "users" }
+        },
+        {
+          "id": "006",
+          "action": "click_button",
+          "target": { "testid": "btn-convert" },
+          "expect": {
+            "toast_type": "success",
+            "element_has_content": "sql-output-editor"
+          }
+        }
+      ],
+      "test_data": {
+        "valid_json": "[{\"id\": 1, \"name\": \"Alice\", \"email\": \"alice@test.com\"}]",
+        "mock_valid_json": "[{\"id\": 1, \"name\": \"Alice\", \"email\": \"alice@test.com\"}]",
+        "mock_table": "users"
+      }
+    },
+    {
+      "id": "F002",
+      "name": "Convert JSON không hợp lệ → hiện toast lỗi",
+      "type": "negative_path",
+      "steps": [
+        {
+          "id": "S001",
+          "action": "navigate",
+          "target": { "testid": null },
+          "expect": { "url_contains": "/tools/json-to-postgresql" }
+        },
+        {
+          "id": "S002",
+          "action": "fill_editor",
+          "target": { "testid": "json-input-editor" },
+          "data": { "ref": "invalid_json" },
+          "expect": { "has_content": true }
+        },
+        {
+          "id": "S003",
+          "action": "click_button",
+          "target": { "testid": "btn-convert" },
+          "expect": {
+            "toast_type": "error"
+          }
+        }
+      ],
+      "test_data": {
+        "invalid_json": "{ không phải json }"
+      }
+    },
+    {
+      "id": "F003",
+      "name": "Bật toggle CREATE TABLE → output có câu lệnh CREATE TABLE",
+      "type": "happy_path",
+      "steps": [
+        {
+          "id": "S001",
+          "action": "navigate",
+          "target": { "testid": null },
+          "expect": { "url_contains": "/tools/json-to-postgresql" }
+        },
+        {
+          "id": "002",
+          "action": "click_button",
+          "target": { "testid": "slide-option-1" }
+        },
+        {
+          "id": "003",
+          "action": "toggle_switch",
+          "target": { "testid": "toggle-create-table" },
+          "data": { "value": true },
+          "expect": { "checked": true }
+        },
+        {
+          "id": "004",
+          "action": "fill_editor",
+          "target": { "testid": "json-input-editor" },
+          "data": { "ref": "valid_json" }
+        },
+        {
+          "id": "005",
+          "action": "fill_input",
+          "target": { "testid": "input-schema-name" },
+          "data": { "ref": "mock_schema" }
+        },
+        {
+          "id": "006",
+          "action": "fill_input",
+          "target": { "testid": "input-table-name" },
+          "data": { "value": "orders" }
+        },
+        {
+          "id": "007",
+          "action": "click_button",
+          "target": { "testid": "btn-convert" },
+          "expect": {
+            "toast_type": "success",
+            "output_contains": { "testid": "sql-output-editor", "text": "create table" }
+          }
+        }
+      ],
+      "test_data": {
+        "valid_json": "[{\"order_id\": 1, \"amount\": 100, \"status\": \"pending\"}]",
+        "mock_schema": "public"
+      }
+    },
+    {
+      "id": "F004",
+      "name": "Bật toggle DELETE OLD → output có câu lệnh DELETE",
+      "type": "happy_path",
+      "steps": [
+        {
+          "id": "S001",
+          "action": "navigate",
+          "target": { "testid": null },
+          "expect": { "url_contains": "/tools/json-to-postgresql" }
+        },
+        {
+          "id": "002",
+          "action": "click_button",
+          "target": { "testid": "slide-option-1" }
+        },
+        {
+          "id": "003",
+          "action": "toggle_switch",
+          "target": { "testid": "toggle-delete-old" },
+          "data": { "value": true },
+          "expect": { "checked": true }
+        },
+        {
+          "id": "004",
+          "action": "fill_editor",
+          "target": { "testid": "json-input-editor" },
+          "data": { "ref": "valid_json" }
+        },
+        {
+          "id": "005",
+          "action": "fill_input",
+          "target": { "testid": "input-schema-name" },
+          "data": { "ref": "mock_schema" }
+        },
+        {
+          "id": "006",
+          "action": "fill_input",
+          "target": { "testid": "input-table-name" },
+          "data": { "value": "products" }
+        },
+        {
+          "id": "007",
+          "action": "fill_input",
+          "target": { "testid": "input-primary-key" },
+          "data": { "value": "product_id" }
+        },
+        {
+          "id": "008",
+          "action": "click_button",
+          "target": { "testid": "btn-convert" },
+          "expect": {
+            "toast_type": "success",
+            "output_contains": { "testid": "sql-output-editor", "text": "delete from" }
+          }
+        }
+      ],
+      "test_data": {
+        "valid_json": "[{\"product_id\": 101, \"name\": \"Widget\", \"price\": 9.99}]",
+        "mock_schema": "public"
+      }
+    },
+    {
+      "id": "F005",
+      "name": "Click nút Example → input được điền dữ liệu mẫu",
+      "type": "happy_path",
+      "steps": [
+        {
+          "id": "S001",
+          "action": "navigate",
+          "target": { "testid": null },
+          "expect": { "url_contains": "/tools/json-to-postgresql" }
+        },
+        {
+          "id": "S002",
+          "action": "click_button",
+          "target": { "testid": "btn-example" },
+          "expect": {
+            "element_has_content": "json-input-editor"
+          }
+        }
+      ],
+      "test_data": {}
+    },
+    {
+      "id": "F006",
+      "name": "Convert thành công → click Copy → clipboard có nội dung SQL",
+      "type": "happy_path",
+      "steps": [
+        {
+          "id": "S001",
+          "action": "navigate",
+          "target": { "testid": null },
+          "expect": { "url_contains": "/tools/json-to-postgresql" }
+        },
+        {
+          "id": "002",
+          "action": "click_button",
+          "target": { "testid": "slide-option-1" }
+        },
+        {
+          "id": "003",
+          "action": "fill_editor",
+          "target": { "testid": "json-input-editor", "language": "json" },
+          "data": { "value": "[{\"id\": 1, \"name\": \"Alice\"}]" }
+        },
+        {
+          "id": "004",
+          "action": "fill_input",
+          "target": { "testid": "input-schema-name" },
+          "data": { "value": "public" }
+        },
+        {
+          "id": "005",
+          "action": "fill_input",
+          "target": { "testid": "input-table-name" },
+          "data": { "ref": "mock_table" }
+        },
+        {
+          "id": "006",
+          "action": "click_button",
+          "target": { "testid": "btn-convert" },
+          "expect": { "toast_type": "success" }
+        },
+        {
+          "id": "007",
+          "action": "click_button",
+          "target": { "testid": "btn-copy" },
+          "expect": {
+            "toast_type": "success"
+          }
+        }
+      ],
+      "test_data": {
+        "valid_json": "[{\"id\": 1, \"name\": \"Alice\"}]"
+      }
+    }
+  ]
+}
