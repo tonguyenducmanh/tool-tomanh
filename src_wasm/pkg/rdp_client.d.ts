@@ -212,6 +212,14 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
+    readonly __wbg_rdpfile_free: (a: number, b: number) => void;
+    readonly rdpfile_create: () => number;
+    readonly rdpfile_getInt: (a: number, b: number, c: number) => number;
+    readonly rdpfile_getStr: (a: number, b: number, c: number) => [number, number];
+    readonly rdpfile_insertInt: (a: number, b: number, c: number, d: number) => void;
+    readonly rdpfile_insertStr: (a: number, b: number, c: number, d: number, e: number) => void;
+    readonly rdpfile_parse: (a: number, b: number, c: number) => void;
+    readonly rdpfile_write: (a: number) => [number, number];
     readonly __wbg_clipboarddata_free: (a: number, b: number) => void;
     readonly __wbg_clipboarditem_free: (a: number, b: number) => void;
     readonly __wbg_deviceevent_free: (a: number, b: number) => void;
@@ -272,14 +280,6 @@ export interface InitOutput {
     readonly sessionbuilder_username: (a: number, b: number, c: number) => number;
     readonly sessionterminationinfo_reason: (a: number) => [number, number];
     readonly setup: (a: number, b: number) => void;
-    readonly __wbg_rdpfile_free: (a: number, b: number) => void;
-    readonly rdpfile_create: () => number;
-    readonly rdpfile_getInt: (a: number, b: number, c: number) => number;
-    readonly rdpfile_getStr: (a: number, b: number, c: number) => [number, number];
-    readonly rdpfile_insertInt: (a: number, b: number, c: number, d: number) => void;
-    readonly rdpfile_insertStr: (a: number, b: number, c: number, d: number, e: number) => void;
-    readonly rdpfile_parse: (a: number, b: number, c: number) => void;
-    readonly rdpfile_write: (a: number) => [number, number];
     readonly __wbg_desktopsize_free: (a: number, b: number) => void;
     readonly __wbg_get_desktopsize_height: (a: number) => number;
     readonly __wbg_get_desktopsize_width: (a: number) => number;
@@ -292,16 +292,16 @@ export interface InitOutput {
     readonly rdcleanpathdetails_wsaErrorCode: (a: number) => number;
     readonly __wbg_extension_free: (a: number, b: number) => void;
     readonly extension_create: (a: number, b: number, c: any) => number;
-    readonly wasm_bindgen__closure__destroy__h008e9ef353045abf: (a: number, b: number) => void;
-    readonly wasm_bindgen__closure__destroy__ha37a697e033b08e9: (a: number, b: number) => void;
-    readonly wasm_bindgen__closure__destroy__h2e1433d638a13516: (a: number, b: number) => void;
-    readonly wasm_bindgen__convert__closures_____invoke__h7b4e1399ebc03eb9: (a: number, b: number, c: any) => [number, number];
-    readonly wasm_bindgen__convert__closures_____invoke__h2e6d18637215a1a1: (a: number, b: number, c: any, d: any) => void;
-    readonly wasm_bindgen__convert__closures_____invoke__h279b8160f6b163b9: (a: number, b: number, c: any) => void;
-    readonly wasm_bindgen__convert__closures_____invoke__h279b8160f6b163b9_1: (a: number, b: number, c: any) => void;
-    readonly wasm_bindgen__convert__closures_____invoke__h279b8160f6b163b9_2: (a: number, b: number, c: any) => void;
-    readonly wasm_bindgen__convert__closures_____invoke__h03c374c432cfefcd: (a: number, b: number) => void;
-    readonly wasm_bindgen__convert__closures_____invoke__haaa0e8898e6901d4: (a: number, b: number) => void;
+    readonly wasm_bindgen__closure__destroy__h27bbb12dc250a040: (a: number, b: number) => void;
+    readonly wasm_bindgen__closure__destroy__h4902aa6ab54064fd: (a: number, b: number) => void;
+    readonly wasm_bindgen__closure__destroy__hbd8edc3b244f76a1: (a: number, b: number) => void;
+    readonly wasm_bindgen__convert__closures_____invoke__h7ad44b095560d45a: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen__convert__closures_____invoke__h37a49abe06ac8872: (a: number, b: number, c: any, d: any) => void;
+    readonly wasm_bindgen__convert__closures_____invoke__h61f1eaa0a9dbd34c: (a: number, b: number, c: any) => void;
+    readonly wasm_bindgen__convert__closures_____invoke__h61f1eaa0a9dbd34c_1: (a: number, b: number, c: any) => void;
+    readonly wasm_bindgen__convert__closures_____invoke__h61f1eaa0a9dbd34c_2: (a: number, b: number, c: any) => void;
+    readonly wasm_bindgen__convert__closures_____invoke__hb44baf426d3d77c7: (a: number, b: number) => void;
+    readonly wasm_bindgen__convert__closures_____invoke__h8d9073a9782d1fad: (a: number, b: number) => void;
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
     readonly __wbindgen_exn_store: (a: number) => void;
