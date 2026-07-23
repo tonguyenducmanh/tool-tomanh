@@ -7,7 +7,7 @@
           <TDInput
             v-model="requestName"
             :noMargin="true"
-            :placeHolder="$t('i18nCommon.apiTesting.requestName')"
+            :placeHolder="$t('i18nCommon.apiTesting.scriptName')"
             :borderRadiusPosition="[
               $tdEnum.BorderRadiusPosition.TopLeft,
               $tdEnum.BorderRadiusPosition.BottomLeft,
@@ -37,18 +37,21 @@
           iconClass="td-download-icon"
           v-tooltip="$t('i18nCommon.apiTesting.downloadReponse')"
         ></TDButton>
+        <TDUpload
+          v-tooltip="{
+            text: $t('i18nCommon.apiTesting.importCollectionZipTooltip'),
+            maxWidth: '500px',
+          }"
+          iconClass="td-upload-icon"
+          :accept="'.zip'"
+          @change="importProModeCollectionZip"
+          ref="uploadAreaProMode"
+          :isShowSelect="false"
+        />
         <TDButton
-          @click="copyCURLFromNormalMode"
-          :type="$tdEnum.buttonType.secondary"
-          :noMargin="true"
-          :readOnly="!(apiUrl && httpMethod) || isLoading"
-          iconClass="td-export-icon"
-          v-tooltip="$t('i18nCommon.apiTesting.copyCURLFromAPI')"
-        ></TDButton>
-        <TDButton
-          v-if="currentRequestId"
+          v-if="currentProModeRequestId"
           :readOnly="isLoadingData"
-          @click="createNewRequest"
+          @click="createNewScriptRequest"
           :type="$tdEnum.buttonType.secondary"
           :noMargin="true"
           iconClass="td-new-file-icon"
@@ -56,82 +59,22 @@
         ></TDButton>
         <TDButton
           :readOnly="isLoadingData || !requestName"
-          @click="saveRequest"
+          @click="saveProModeRequest"
           :type="$tdEnum.buttonType.secondary"
           :noMargin="true"
           iconClass="td-save-icon"
           v-tooltip="$t('i18nCommon.apiTesting.save')"
         ></TDButton>
+        <TDButton
+          :noMargin="true"
+          @click="copyAIDocsToClipboard"
+          :type="$tdEnum.buttonType.secondary"
+          iconClass="td-copy-icon"
+          v-tooltip="$t('i18nCommon.apiTesting.copyAIDocs')"
+        ></TDButton>
       </div>
       <!-- Content -->
       <div class="td-api-content">
-        <div class="flex td-api-info-btn">
-          <div class="flex flex-one">
-            <TDComboBox
-              :width="100"
-              v-model="httpMethod"
-              :options="methodOptions"
-              :customStyle="customStyleComboMethodAPI"
-              :noMargin="true"
-              :borderRadiusPosition="[
-                $tdEnum.BorderRadiusPosition.TopLeft,
-                $tdEnum.BorderRadiusPosition.BottomLeft,
-              ]"
-            />
-            <TDInput
-              v-model="apiUrl"
-              :placeHolder="$t('i18nCommon.apiTesting.urlPlaceholder')"
-              :noMargin="true"
-              :borderRadiusPosition="[
-                $tdEnum.BorderRadiusPosition.TopRight,
-                $tdEnum.BorderRadiusPosition.BottomRight,
-              ]"
-            ></TDInput>
-            <div class="flex td-import-request-group">
-              <TDButton
-                @click="openFormImportCURL"
-                :type="$tdEnum.buttonType.secondary"
-                :noMargin="true"
-                :readOnly="isLoading"
-                iconClass="td-import-icon"
-                v-tooltip="$t('i18nCommon.apiTesting.CURL')"
-              ></TDButton>
-              <TDButton
-                :noMargin="true"
-                :readOnly="!responseText"
-                @click="copyMockData"
-                :type="$tdEnum.buttonType.secondary"
-                iconClass="td-copy-icon"
-                v-tooltip="$t('i18nCommon.apiTesting.copyMockData')"
-              ></TDButton>
-              <TDUpload
-                v-tooltip="{
-                  text: $t('i18nCommon.apiTesting.importCollectionZipTooltip'),
-                  maxWidth: '500px',
-                }"
-                iconClass="td-upload-icon"
-                :accept="'.zip'"
-                @change="importCollectionZip"
-                ref="uploadArea"
-                :isShowSelect="false"
-              />
-              <TDUpload
-                v-tooltip="{
-                  text: $t(
-                    'i18nCommon.apiTesting.importCollectionPostmanTooltip',
-                  ),
-                  maxWidth: '500px',
-                }"
-                :accept="'.json'"
-                iconClass="td-postman-icon"
-                @change="importCollectionPostman"
-                ref="uploadAreaPostman"
-                :isShowSelect="false"
-                :multiple="true"
-              />
-            </div>
-          </div>
-        </div>
         <div
           class="flex td-api-input-area"
           :class="{ 'flex-col': currentConfigLayout.splitHorizontal }"
@@ -141,65 +84,15 @@
             :style="requestSectionSizeStyle"
           >
             <TDTextEditor
-              v-if="
-                currentConfigLayout.currentAPIInfoOption ==
-                $tdEnum.APIInfoOption.header
-              "
-              :isShowHeader="true"
-              v-model="headersText"
-              :enableHighlight="true"
-              language="text/plan"
+              :isLabelTop="true"
+              v-model="proModeSecranioCode"
+              language="td-api-javascript"
               :wrapText="currentConfigLayout.wrapText"
-              :placeHolder="$t('i18nCommon.apiTesting.headersPlaceholder')"
-              :label="$t('i18nCommon.APIMocking.request')"
-            >
-              <template v-slot:header-main>
-                <div class="flex td-header-options">
-                  <span class="td-header-option active">{{
-                    $t("i18nCommon.apiTesting.changeToViewHeader")
-                  }}</span>
-                  <span
-                    class="td-header-option"
-                    @click="changeToViewBodyRequest"
-                    v-tooltip="$t('i18nCommon.apiTesting.clickToViewBody')"
-                    >{{ $t("i18nCommon.apiTesting.changeToViewBody") }}</span
-                  >
-                </div>
-              </template>
-            </TDTextEditor>
-            <div
-              class="td-text-area-wrap"
-              v-if="
-                currentConfigLayout.currentAPIInfoOption ==
-                $tdEnum.APIInfoOption.body
-              "
-            >
-              <TDTextEditor
-                :isShowHeader="true"
-                v-model="bodyText"
-                :wrapText="currentConfigLayout.wrapText"
-                :enableHighlight="true"
-                language="json"
-                :placeHolder="$t('i18nCommon.apiTesting.bodyPlaceholder')"
-                :label="$t('i18nCommon.APIMocking.request')"
-              >
-                <template v-slot:header-main>
-                  <div class="flex td-header-options">
-                    <span
-                      class="td-header-option"
-                      @click="changeToViewHeaderRequest"
-                      v-tooltip="$t('i18nCommon.apiTesting.clickToViewHeader')"
-                      >{{
-                        $t("i18nCommon.apiTesting.changeToViewHeader")
-                      }}</span
-                    >
-                    <span class="td-header-option active">{{
-                      $t("i18nCommon.apiTesting.changeToViewBody")
-                    }}</span>
-                  </div>
-                </template>
-              </TDTextEditor>
-            </div>
+              :enableHighlight="true"
+              :monacoOptions="proModeMonacoOptions"
+              :placeHolder="$t('i18nCommon.apiTesting.scriptExecute')"
+              :label="$t('i18nCommon.apiTesting.scriptExecute')"
+            ></TDTextEditor>
           </div>
           <TDResizer
             v-if="currentConfigLayout.showReponse"
@@ -279,7 +172,7 @@
             />
             <TDButton
               :noMargin="true"
-              @click="loadAllTestingData"
+              @click="loadAllProModeData"
               :type="$tdEnum.buttonType.secondary"
               iconClass="td-reload-icon"
               v-tooltip="$t('i18nCommon.APIMocking.refresh')"
@@ -335,7 +228,9 @@
                     <div
                       v-tooltip="$t('i18nCommon.apiTesting.delete')"
                       class="td-icon td-close-icon"
-                      @click.stop="deleteCollection(collection.collection_id)"
+                      @click.stop="
+                        deleteProModeCollection(collection.collection_id)
+                      "
                     ></div>
                   </div>
                 </div>
@@ -353,9 +248,10 @@
                     class="flex td-collection-request-item"
                     :class="{
                       'td-collection-request-item-selected':
-                        request && currentRequestId == request.requestId,
+                        request &&
+                        currentProModeRequestId == request.requestId,
                     }"
-                    @click="applyRequest(request)"
+                    @click="applyProModeRequest(request)"
                   >
                     <span class="text-nowrap">
                       <div v-tooltip="request.requestName">
@@ -367,7 +263,10 @@
                         class="td-icon td-close-icon"
                         v-tooltip="$t('i18nCommon.apiTesting.delete')"
                         @click.stop="
-                          deleteRequest(collection.collection_id, request)
+                          deleteProModeRequest(
+                            collection.collection_id,
+                            request,
+                          )
                         "
                       ></div>
                     </span>
@@ -418,7 +317,7 @@
             titleKey="requestName"
             :noMargin="true"
             :positionRelative="false"
-            :cacheKey="$tdEnum.cacheConfig.APIHistory"
+            :cacheKey="$tdEnum.cacheConfig.APIPromodeHistory"
             :historyContainerStyleEnum="
               $tdEnum.AbsolutePositionStyle.Top100Left
             "
@@ -440,11 +339,16 @@ import TDDialogUtil, { TDDialogEnum } from "@/common/TDDialogUtil.js";
 import TDServerTestingAPI from "@/common/api/request/AgentAPI/TDServerTestingAPI.js";
 import TDToolBase from "@/views/tools/base/TDToolBase.vue";
 import TDAPITestingHelp from "@/views/helps/TDAPITestingHelp.vue";
+import { registerTdApiPromodeLanguage } from "@/monarch/apiTesting/tdApiPromodeLanguage.js";
+import { registerTdApiPromodeFormatProvider } from "@/monarch/apiTesting/tdApiPromodeFormatProvider.js";
+import { registerTdApiPromodeCompletionProvider } from "@/monarch/apiTesting/tdApiPromodeCompletionProvider.js";
+import { registerTdApiPromodeHoverProvider } from "@/monarch/apiTesting/tdApiPromodeHoverProvider.js";
+import { API_ITEMS } from "@/monarch/apiTesting/tdApiPromodeItems.js";
 import _ from "@/common/TDCommonFunction.js";
 import { TDShortcutActionEnum } from "@/common/TDShortcutAction.js";
 export default {
   extends: TDToolBase,
-  name: "TDAPITesting",
+  name: "TDAutomation",
   components: {
     TDSubSidebar,
     TDArrow,
@@ -455,15 +359,11 @@ export default {
 
   data() {
     return {
-      keyCacheLayout: this.$tdEnum.cacheConfig.APIConfigLayout,
-      apiUrl: "",
+      keyCacheLayout: this.$tdEnum.cacheConfig.TDAutomationConfigLayout,
       requestName: "",
-      currentRequestId: null,
+      currentProModeRequestId: null,
       newCollectionName: "",
       allCollection: [],
-      httpMethod: "GET",
-      headersText: "Content-Type: application/json",
-      bodyText: "",
       responseText: "",
       responseHeadersText: null,
       statusCode: null,
@@ -477,22 +377,9 @@ export default {
         splitHorizontal: false,
         isShowSidebar: true,
         currentSidebarOption: this.$tdEnum.APISidebarOption.Setting,
-        currentAPIInfoOption: this.$tdEnum.APIInfoOption.body,
         currentAPIResponseInfoOption: this.$tdEnum.APIInfoOption.body,
       },
-      curlContent: "",
-      methodOptions: [
-        { value: "GET", label: "GET" },
-        { value: "POST", label: "POST" },
-        { value: "PUT", label: "PUT" },
-        { value: "PATCH", label: "PATCH" },
-        { value: "DELETE", label: "DELETE" },
-        { value: "HEAD", label: "HEAD" },
-        {
-          value: "OPTIONS",
-          label: "OPTIONS",
-        },
-      ],
+      proModeSecranioCode: "",
       requestSectionSize: 50,
       responseSectionSize: 50,
       agentAPI: null,
@@ -504,7 +391,8 @@ export default {
   },
   async mounted() {
     this.agentAPI = new TDServerTestingAPI();
-    await this.loadAllTestingData();
+    registerTdApiPromodeLanguage();
+    await this.loadAllProModeData();
   },
   watch: {
     requestName(oldVal, newVal) {
@@ -567,14 +455,14 @@ export default {
       });
       return options;
     },
-    customStyleComboMethodAPI() {
+    proModeMonacoOptions() {
       let me = this;
-      let style = me.methodOptions.find((x) => x.value == me.httpMethod);
-      if (style) {
-        return style.customStyle;
-      } else {
-        return null;
-      }
+      return {
+        onInit: (editor, monacoInstance) => {
+          me._monacoInstance = monacoInstance;
+          me._registerProModeProviders(monacoInstance);
+        },
+      };
     },
   },
   beforeUnmount() {
@@ -584,6 +472,7 @@ export default {
     if (this.debouncedHandleSend?.cancel) {
       this.debouncedHandleSend.cancel();
     }
+    this.disposeIntellisense();
   },
   methods: {
     getTabLifecycleConfig() {
@@ -612,58 +501,57 @@ export default {
         domEvents: [],
       };
     },
-    changeToViewBodyRequest() {
+    registerIntellisense() {
       let me = this;
-      me.currentConfigLayout.currentAPIInfoOption =
-        me.$tdEnum.APIInfoOption.body;
-      me.updateConfigLayout();
+      if (me._monacoInstance) {
+        me._registerProModeProviders(me._monacoInstance);
+      }
     },
-    changeToViewHeaderRequest() {
+    disposeIntellisense() {
       let me = this;
-      me.currentConfigLayout.currentAPIInfoOption =
-        me.$tdEnum.APIInfoOption.header;
-      me.updateConfigLayout();
+      if (me._proModeDisposables) {
+        me._proModeDisposables.forEach((d) => d?.dispose?.());
+        me._proModeDisposables = null;
+      }
+    },
+    _registerProModeProviders(monacoInstance) {
+      let me = this;
+      if (me._proModeDisposables) {
+        me._proModeDisposables.forEach((d) => d?.dispose?.());
+      }
+      me._proModeDisposables = [];
+
+      const completionDisposable =
+        registerTdApiPromodeCompletionProvider(monacoInstance);
+      me._proModeDisposables.push(completionDisposable);
+
+      const hoverDisposable = registerTdApiPromodeHoverProvider(monacoInstance);
+      me._proModeDisposables.push(hoverDisposable);
+
+      registerTdApiPromodeFormatProvider(monacoInstance);
     },
     handleResize(sizes) {
       this.requestSectionSize = sizes.leftSize;
       this.responseSectionSize = sizes.rightSize;
-    },
-    async addNewCollection(collectionName) {
-      let me = this;
-      if (typeof collectionName == "string") {
-        me.newCollectionName = collectionName;
-      }
-      if (me.newCollectionName) {
-        try {
-          let response = await me.agentAPI.testingGroup.create({
-            name: me.newCollectionName,
-          });
-          if (response && response.success && response.data?.success) {
-            me.$tdToast.success(me.$t("i18nCommon.toastMessage.success"));
-            me.newCollectionName = "";
-            await me.loadAllTestingData();
-          }
-        } catch (error) {
-          me.$tdToast.error(me.$t("i18nCommon.toastMessage.error"));
-        }
-      }
     },
     async toggleCollection(collection) {
       if (collection) {
         collection.openingCollection = !collection.openingCollection;
       }
     },
-    async loadAllTestingData() {
+
+    // ─── CRUD ──────────────────────────────────────────────
+    async loadAllProModeData() {
       let me = this;
       me.isLoadingData = true;
       try {
-        let [groupsParams, testsParams] = await Promise.all([
-          me.agentAPI.testingGroup.getAll(),
-          me.agentAPI.testingItem.getAll(),
+        let [groupsParams, itemsParams] = await Promise.all([
+          me.agentAPI.proModeGroup.getAll(),
+          me.agentAPI.proModeItem.getAll(),
         ]);
 
         let groups = groupsParams?.data?.data || [];
-        let tests = testsParams?.data?.data || [];
+        let items = itemsParams?.data?.data || [];
 
         let collections = groups.map((g) => ({
           name: g.name,
@@ -673,17 +561,14 @@ export default {
           is_renaming: false,
         }));
 
-        tests.forEach((t) => {
+        items.forEach((t) => {
           let collection = collections.find(
             (c) => c.collection_id === t.group_id,
           );
           if (collection) {
             collection.requests.push({
               requestName: t.request_name,
-              method: t.method,
-              apiUrl: t.end_point,
-              headersText: t.headers_text,
-              bodyText: t.body_text,
+              scriptCode: t.script_code,
               requestId: t.id,
             });
           }
@@ -702,39 +587,69 @@ export default {
 
         me.allCollection = collections;
       } catch (error) {
-        console.error("Lỗi tải dữ liệu testing:", error);
+        console.error("Lỗi tải dữ liệu automation:", error);
         me.$tdUtility.showErrorNotFoundAgentServer();
       } finally {
         me.isLoadingData = false;
       }
     },
-    applyRequest(request) {
+    async addNewCollection(collectionName) {
       let me = this;
-      me.handleSendRequestFromHistory(request);
-      me.currentRequestId = request.requestId;
+      if (typeof collectionName == "string") {
+        me.newCollectionName = collectionName;
+      }
+      if (me.newCollectionName) {
+        try {
+          let response = await me.agentAPI.proModeGroup.create({
+            name: me.newCollectionName,
+          });
+          if (response && response.success && response.data?.success) {
+            me.$tdToast.success(me.$t("i18nCommon.toastMessage.success"));
+            me.newCollectionName = "";
+            await me.loadAllProModeData();
+          }
+        } catch (error) {
+          me.$tdToast.error(me.$t("i18nCommon.toastMessage.error"));
+        }
+      }
     },
-    async saveRequest() {
+    applyProModeRequest(request) {
       let me = this;
-      if (me.requestName && me.allCollection && me.allCollection.length > 0) {
-        if (me.currentRequestId) {
+      if (request) {
+        me.requestName = request.requestName;
+        me.proModeSecranioCode = request.scriptCode || "";
+        me.currentProModeRequestId = request.requestId;
+      }
+    },
+    createNewScriptRequest() {
+      let me = this;
+      me.requestName = "";
+      me.proModeSecranioCode = "";
+      me.currentProModeRequestId = null;
+    },
+    async saveProModeRequest() {
+      let me = this;
+      if (
+        me.requestName &&
+        me.allCollection &&
+        me.allCollection.length > 0
+      ) {
+        if (me.currentProModeRequestId) {
           let currentCollection = me.allCollection.find((c) =>
-            c.requests.find((r) => r.requestId == me.currentRequestId),
+            c.requests.find((r) => r.requestId == me.currentProModeRequestId),
           );
           if (currentCollection) {
             let testData = {
-              id: me.currentRequestId,
+              id: me.currentProModeRequestId,
               request_name: me.requestName,
               group_id: currentCollection.collection_id,
-              method: me.httpMethod,
-              end_point: me.apiUrl,
-              headers_text: me.headersText,
-              body_text: me.bodyText,
+              script_code: me.proModeSecranioCode,
             };
             try {
-              let response = await me.agentAPI.testingItem.update(testData);
+              let response = await me.agentAPI.proModeItem.update(testData);
               if (response && response.success && response.data?.success) {
                 me.$tdToast.success(me.$t("i18nCommon.toastMessage.success"));
-                await me.loadAllTestingData();
+                await me.loadAllProModeData();
               }
             } catch (e) {
               me.$tdToast.error(me.$t("i18nCommon.toastMessage.error"));
@@ -742,7 +657,7 @@ export default {
           }
         } else {
           TDDialogUtil.showPopup({
-            dialogType: TDDialogEnum.TDAPISaveToCollectionPopup,
+            dialogType: TDDialogEnum.TDAPISaveProModeToCollectionPopup,
             ownerForm: this,
             props: {
               allCollection: me.allCollection,
@@ -754,34 +669,34 @@ export default {
     async saveToCollection(collection) {
       let me = this;
       let testData = {
-        request_name: me.requestName || me.apiUrl,
+        request_name: me.requestName || "Untitled Script",
         group_id: collection.collection_id,
-        method: me.httpMethod,
-        end_point: me.apiUrl,
-        headers_text: me.headersText,
-        body_text: me.bodyText,
+        script_code: me.proModeSecranioCode,
       };
       try {
-        let response = await me.agentAPI.testingItem.create(testData);
+        let response = await me.agentAPI.proModeItem.create(testData);
         if (response && response.success && response.data?.success) {
           me.$tdToast.success(me.$t("i18nCommon.toastMessage.success"));
-          me.currentRequestId = response.data.data.id;
-          await me.loadAllTestingData();
+          me.currentProModeRequestId = response.data.data.id;
+          await me.loadAllProModeData();
         }
       } catch (e) {
         me.$tdToast.error(me.$t("i18nCommon.toastMessage.error"));
       }
     },
-    async deleteRequest(collectionId, request) {
+    async deleteProModeRequest(collectionId, request) {
       let me = this;
       if (request && request.requestId) {
         try {
-          let response = await me.agentAPI.testingItem.deleteById(
+          let response = await me.agentAPI.proModeItem.deleteById(
             request.requestId,
           );
           if (response && response.success && response.data?.success) {
             me.$tdToast.success(me.$t("i18nCommon.toastMessage.success"));
-            await me.loadAllTestingData();
+            if (me.currentProModeRequestId == request.requestId) {
+              me.currentProModeRequestId = null;
+            }
+            await me.loadAllProModeData();
           }
         } catch (e) {
           me.$tdToast.error(me.$t("i18nCommon.toastMessage.error"));
@@ -813,13 +728,13 @@ export default {
         delete collection.is_renaming;
         if (collection.temp_name && collection.temp_name !== collection.name) {
           try {
-            let response = await me.agentAPI.testingGroup.update({
+            let response = await me.agentAPI.proModeGroup.update({
               id: collection.collection_id,
               name: collection.temp_name,
             });
             if (response && response.success && response.data?.success) {
               me.$tdToast.success(me.$t("i18nCommon.toastMessage.success"));
-              await me.loadAllTestingData();
+              await me.loadAllProModeData();
             }
           } catch (e) {
             me.$tdToast.error(me.$t("i18nCommon.toastMessage.error"));
@@ -827,31 +742,55 @@ export default {
         }
       }
     },
-    async deleteCollection(collectionId) {
+    copyAIDocsToClipboard() {
+      let me = this;
+      let prompt = me.buildAIDocsPrompt();
+      me.$tdUtility.copyToClipboard(prompt);
+    },
+    buildAIDocsPrompt() {
+      let lines = [];
+      lines.push("# Automation Script Reference");
+      lines.push("");
+      lines.push("Available functions:");
+      lines.push("");
+      API_ITEMS.forEach((item) => {
+        lines.push(`## ${item.label}`);
+        lines.push("");
+        if (item.documentation) {
+          lines.push(item.documentation.trim());
+        }
+        lines.push("");
+      });
+      lines.push("# End of Reference");
+      return lines.join("\n");
+    },
+    async deleteProModeCollection(collectionId) {
       let me = this;
       if (collectionId) {
         try {
           let response =
-            await me.agentAPI.testingGroup.deleteById(collectionId);
+            await me.agentAPI.proModeGroup.deleteById(collectionId);
           if (response && response.success && response.data?.success) {
             me.$tdToast.success(me.$t("i18nCommon.toastMessage.success"));
-            await me.loadAllTestingData();
+            await me.loadAllProModeData();
           }
         } catch (e) {
           me.$tdToast.error(me.$t("i18nCommon.toastMessage.error"));
         }
       }
     },
-    async importCollectionZip() {
+
+    // ─── ZIP Import ──────────────────────────────────────
+    async importProModeCollectionZip() {
       let me = this;
       if (
-        me.$refs.uploadArea &&
-        typeof me.$refs.uploadArea.getFileSelected == "function" &&
-        typeof me.$refs.uploadArea.clearFileSelected == "function"
+        me.$refs.uploadAreaProMode &&
+        typeof me.$refs.uploadAreaProMode.getFileSelected == "function" &&
+        typeof me.$refs.uploadAreaProMode.clearFileSelected == "function"
       ) {
         let zip = new JSZip();
-        let files = me.$refs.uploadArea.getFileSelected();
-        me.$refs.uploadArea.clearFileSelected();
+        let files = me.$refs.uploadAreaProMode.getFileSelected();
+        me.$refs.uploadAreaProMode.clearFileSelected();
         if (files && Array.isArray(files) && files.length > 0) {
           let zipData = await zip.loadAsync(files[0]);
           let newCollections = await me.buildCollectionsFromZip(zipData);
@@ -878,23 +817,20 @@ export default {
               id: req.requestId,
               request_name: req.requestName,
               group_id: col.collection_id,
-              method: req.httpMethod,
-              end_point: req.apiUrl,
-              headers_text: req.headersText,
-              body_text: req.bodyText,
+              script_code: req.scriptCode,
             });
           });
         }
       });
 
       try {
-        let response = await me.agentAPI.importTestingDataBatch({
+        let response = await me.agentAPI.importProModeBatch({
           groups: groups,
           items: items,
         });
         if (response && response.success && response.data?.success) {
           me.$tdToast.success(me.$t("i18nCommon.toastMessage.success"));
-          await me.loadAllTestingData();
+          await me.loadAllProModeData();
         }
       } catch (e) {
         me.$tdToast.error(me.$t("i18nCommon.toastMessage.error"));
@@ -920,7 +856,7 @@ export default {
 
         let collectionName = parts[1];
         let fileName = parts.at(-1);
-        let requestName = fileName.replace(/\.[^.]+$/, "");
+        let scriptName = fileName.replace(/\.[^.]+$/, "");
 
         let content = await file.async("string");
 
@@ -932,221 +868,81 @@ export default {
             requests: [],
           };
         }
-        let curlConent = TDCURLUtil.parseCURL(content);
-        if (curlConent) {
-          collections[collectionName].requests.push({
-            requestName: requestName,
-            apiUrl: curlConent.url,
-            bodyText: curlConent.body
-              ? JSON.stringify(JSON.parse(curlConent.body), null, 2)
-              : null,
-            headersText: curlConent.headersText,
-            httpMethod: curlConent.method,
-            requestId: me.$tdUtility.newGuid(),
-          });
-        } else {
-          console.log("parse error" + content);
-        }
+        collections[collectionName].requests.push({
+          requestName: scriptName,
+          scriptCode: content,
+          requestId: me.$tdUtility.newGuid(),
+        });
       }
 
       return Object.values(collections);
     },
-    async importCollectionPostman() {
-      let me = this;
-      if (
-        me.$refs.uploadAreaPostman &&
-        typeof me.$refs.uploadAreaPostman.getFileSelected == "function" &&
-        typeof me.$refs.uploadAreaPostman.clearFileSelected == "function"
-      ) {
-        let files = me.$refs.uploadAreaPostman.getFileSelected();
-        me.$refs.uploadArea.clearFileSelected();
-        if (files && Array.isArray(files) && files.length > 0) {
-          let newCollections = [];
-          for (let file of Object.values(files)) {
-            if (!file.name.endsWith(".json")) {
-              continue;
-            }
-            let temp = await me.buildCollectionsFromPostman(file, me);
-            if (
-              temp &&
-              Array.isArray(temp.requests) &&
-              temp.requests.length > 0
-            ) {
-              newCollections.push(temp);
-            }
-          }
-          await me.saveImportCollection(newCollections);
-        }
-      }
-    },
-    async buildCollectionsFromPostman(file, me) {
-      let contentTemp = await file.text();
-      let content = JSON.parse(contentTemp);
-      let result = null;
-      if (
-        content &&
-        content.item &&
-        content.info &&
-        Array.isArray(content.item) &&
-        content.item.length > 0 &&
-        content.info.name
-      ) {
-        let tempCollection = {
-          name: content.info.name,
-          collection_id: me.$tdUtility.newGuid(),
-          openingCollection: false,
-          requests: [],
-        };
-        content.item.forEach((item) => {
-          let bodyText = item?.request?.body?.raw;
-          let headerRaw = item?.request?.header;
-          let headerText = "";
-          if (headerRaw && Array.isArray(headerRaw) && headerRaw.length > 0) {
-            let convertHeader = [];
-            headerRaw.forEach((headerItem) => {
-              convertHeader.push(`${headerItem.key}:${headerItem.value}`);
-            });
-            if (convertHeader.length > 0) {
-              headerText = convertHeader.join("\n");
-            }
-          }
-          if (item.name && item?.request?.url?.raw) {
-            tempCollection.requests.push({
-              requestName: item.name,
-              apiUrl: item?.request?.url?.raw,
-              bodyText: bodyText
-                ? JSON.stringify(JSON.parse(bodyText), null, 2)
-                : null,
-              headersText: headerText,
-              httpMethod: item?.request?.method ?? "GET",
-              requestId: me.$tdUtility.newGuid(),
-            });
-          }
-        });
-        result = tempCollection;
-      }
-      return result;
-    },
-    createNewRequest() {
-      let me = this;
-      me.requestName = "";
-      me.groupName = "";
-      me.currentRequestId = null;
-      me.apiUrl = null;
-      me.httpMethod = "GET";
-      me.headersText = "Content-Type: application/json";
-      me.bodyText = "";
-      me.responseText = "";
-      me.responseHeadersText = null;
-      me.statusCode = null;
-      me.responseTime = null;
-      me.isLoading = false;
-      me.startTime = null;
-      me.currentRequest = null;
-      me.curlContent = "";
-    },
-    formatBody() {
-      let me = this;
-      if (me.bodyText) {
-        me.bodyText = JSON.stringify(JSON.parse(me.bodyText), null, 2);
-      }
-    },
-    parseHeaders(headerString) {
-      let headers = {};
-      if (!headerString) return headers;
 
-      headerString.split("\n").forEach((line) => {
-        let trimmed = line.trim();
-        if (trimmed) {
-          let [key, ...valueParts] = trimmed.split(":");
-          if (key && valueParts.length > 0) {
-            headers[key.trim()] = valueParts.join(":").trim();
-          }
-        }
-      });
-
-      return headers;
-    },
+    // ─── Execution ──────────────────────────────────────
     async handleSend() {
       let me = this;
-      await me.handleSendRequest();
+      await me.handleSendRequestProMode();
     },
-    async handleSendRequest() {
+    async handleSendRequestProMode() {
       let me = this;
 
-      if (!this.apiUrl) {
-        this.$tdToast.error(this.$t("i18nCommon.apiTesting.urlRequired"));
+      if (!me.proModeSecranioCode) {
+        me.$tdToast.error(me.$t("i18nCommon.toastMessage.error"));
         return;
       }
 
-      this.isLoading = true;
-      this.startTime = performance.now();
-      this.responseText = "";
-      this.responseHeadersText = null;
-      this.statusCode = null;
+      me.isLoading = true;
+      me.responseText = "";
+      me.statusCode = null;
+      me.responseTime = null;
+      me.startTime = performance.now();
 
       try {
-        let requestData = {
-          api_url: this.apiUrl,
-          http_method: this.httpMethod,
-          headers_text: this.headersText,
-          body_text: this.bodyText || null,
-        };
+        let injectedCode = TDCURLUtil.buildInjectCode(me.proModeSecranioCode);
 
-        this.currentRequest = TDCURLUtil.fetchAgent(requestData);
-
-        let response = await this.currentRequest.promise;
+        let userFn = new Function(injectedCode);
+        let result = await userFn();
 
         let endTime = performance.now();
-        this.responseTime = Math.round(endTime - this.startTime);
-        this.statusCode = response.status;
-        this.responseHeadersText = response.headers || null;
+        me.responseTime = Math.round(endTime - me.startTime);
+        me.statusCode = 200;
 
-        if (typeof response.body === "object") {
-          this.responseText = JSON.stringify(response.body, null, 2);
-        } else if (typeof response.body === "string") {
+        if (typeof result === "object") {
+          me.responseText = JSON.stringify(result, null, 2);
+        } else if (typeof result === "string") {
           try {
-            let parsed = JSON.parse(response.body);
-            this.responseText = JSON.stringify(parsed, null, 2);
+            me.responseText = JSON.stringify(JSON.parse(result), null, 2);
           } catch {
-            this.responseText = response.body;
+            me.responseText = result;
           }
+        } else if (typeof result !== "undefined") {
+          me.responseText = String(result);
         } else {
-          this.responseText = String(response.body);
+          me.responseText = "// Script executed successfully (no return)";
         }
 
-        this.$tdToast.success(this.$t("i18nCommon.toastMessage.success"));
+        me.$tdToast.success(me.$t("i18nCommon.toastMessage.success"));
       } catch (error) {
-        if (error.message === "Request cancelled by user") {
-          this.responseText = this.$t("i18nCommon.apiTesting.requestCanceled");
-          this.$tdToast.success(
-            this.$t("i18nCommon.apiTesting.requestCanceled"),
-          );
-        } else {
-          this.responseText = `Error: ${error.message}`;
-          this.$tdToast.error(error.message);
-        }
+        me.responseText = `Error: ${error.message}`;
+        me.$tdToast.error(error.message);
       } finally {
-        this.isLoading = false;
-        this.currentRequest = null;
-
-        let historyItem = me.buildHistoryItemForSave();
-        await me.$refs.history.saveToHistory(historyItem);
+        me.isLoading = false;
+        if (me.proModeSecranioCode) {
+          let shortCode = me.proModeSecranioCode.slice(0, 100);
+          let historyItem = {
+            requestName: me.requestName || shortCode,
+            proModeSecranioCode: me.proModeSecranioCode,
+          };
+          await me.$refs.history.saveToHistory(historyItem);
+        }
       }
     },
-    buildHistoryItemForSave() {
+    handleSendRequestFromHistory(item) {
       let me = this;
-      if (!me.apiUrl && me.curlContent) {
-        me.importCURL(true);
+      if (item && item.proModeSecranioCode) {
+        me.proModeSecranioCode = item.proModeSecranioCode;
+        me.requestName = item.requestName;
       }
-      let historyItem = {
-        apiUrl: me.apiUrl,
-        httpMethod: me.httpMethod,
-        headersText: me.headersText,
-        bodyText: me.bodyText,
-        requestName: me.requestName || me.apiUrl,
-      };
-      return historyItem;
     },
     handleCancelRequest() {
       if (
@@ -1155,30 +951,8 @@ export default {
       ) {
         this.currentRequest.cancel();
       }
-
       this.isLoading = false;
       this.currentRequest = null;
-    },
-    handleSendRequestFromHistory(item) {
-      let me = this;
-      if (item && item.apiUrl) {
-        me.apiUrl = item.apiUrl;
-        me.httpMethod = item.method ?? item.httpMethod;
-        me.headersText = item.headersText;
-        me.bodyText = item.bodyText;
-        me.requestName = item.requestName;
-        me.curlContent = TDCURLUtil.stringifyCURL(me.getRequestObj());
-        me.currentRequestId = null;
-      }
-    },
-    getRequestObj() {
-      let me = this;
-      return {
-        apiUrl: me.apiUrl,
-        httpMethod: me.httpMethod,
-        headersText: me.headersText,
-        bodyText: me.bodyText,
-      };
     },
     handleDownloadReponse() {
       let me = this;
@@ -1193,57 +967,6 @@ export default {
           "text/plain;charset=utf-8",
           fileName,
         );
-      }
-    },
-    openFormImportCURL() {
-      let me = this;
-      TDDialogUtil.showPopup({
-        dialogType: TDDialogEnum.TDAPIImportCURLPopup,
-        ownerForm: this,
-        props: {
-          currentConfigLayout: me.currentConfigLayout,
-        },
-      });
-    },
-    copyCURLFromNormalMode() {
-      let me = this;
-      me.curlContent = TDCURLUtil.stringifyCURL(me.getRequestObj());
-      me.$tdUtility.copyToClipboard(me.curlContent);
-    },
-    importCURL(isSilence = false) {
-      let me = this;
-      let CURLParsed = TDCURLUtil.parseCURL(me.curlContent);
-      let result = false;
-      if (CURLParsed) {
-        me.apiUrl = CURLParsed.url;
-        if (!isSilence) {
-          me.requestName = CURLParsed.url;
-        }
-        me.bodyText = CURLParsed.bodyText;
-        me.httpMethod = CURLParsed.method;
-        me.headersText = CURLParsed.headersText;
-        result = true;
-      } else {
-        if (!isSilence) {
-          me.$tdToast.error(me.$t("i18nCommon.toastMessage.error"));
-        }
-        result = false;
-      }
-      return result;
-    },
-    copyMockData() {
-      let me = this;
-      if (me.responseText) {
-        let mockData = {};
-        mockData.request_name = me.requestName;
-        mockData.method = me.httpMethod;
-        mockData.api_url = me.apiUrl;
-        mockData.headers_text = me.headersText;
-        mockData.body_text = me.bodyText;
-        mockData.response_text = me.responseText;
-        mockData.response_headers_text = me.responseHeadersText;
-        mockData.status_code = me.statusCode;
-        me.$tdUtility.copyToClipboard(JSON.stringify(mockData));
       }
     },
   },
@@ -1288,10 +1011,6 @@ export default {
   position: relative;
   width: 100%;
 }
-.td-api-info-btn {
-  margin-top: var(--padding);
-  gap: var(--padding);
-}
 .td-header-collection {
   width: 100%;
   height: 30px;
@@ -1315,26 +1034,5 @@ export default {
 }
 .td-collection-rename {
   width: 100%;
-}
-.td-import-request-group {
-  gap: var(--padding);
-  margin-left: var(--padding);
-}
-.td-text-area-wrap {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-.td-header-options {
-  gap: var(--padding);
-}
-.td-header-option {
-  cursor: pointer;
-  color: var(--td-monaco-text-inactive);
-  transition: color 0.15s;
-}
-.td-header-option.active {
-  color: var(--td-monaco-text-active);
-  font-weight: 600;
 }
 </style>
